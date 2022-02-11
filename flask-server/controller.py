@@ -8,13 +8,7 @@ from flask import request, jsonify
 import flask_praetorian
 
 
-
-
-
-
-#jwt = JWTManager(app)
 guard = flask_praetorian.Praetorian()
-#cors = flask_cors.CORS()
 
 guard.init_app(app, User)
 
