@@ -2,6 +2,7 @@
 from api import app, db
 from models import User, Contest, user_schema, contest_schema
 
+import datetime
 from flask import request, jsonify
 #from flask_sqlalchemy import SQLAlchemy 
 #from flask_marshmallow import Marshmallow  
@@ -112,26 +113,38 @@ def get_user(user_id):
     print(user.roles)
     return user_schema.dump(user)
 
-# @app.route("/api/events", methods=["POST"])
-# @flask_praetorian.auth_required
-# def add_event():
-#     """
-#     add new event
-#     """
-#     new_event = Event(
+@app.route("/api/contest/create", methods=["POST"])
+@flask_praetorian.auth_required
+def add_event():
+    """
+    add new event
+    """
+    
+    date_start_split = request.json['date_start'].split('-')
+    date_end_split = request.json['date_end'].split('-')
+    print(type(date_start_split))
+    print(date_start_split)
+    new_contest = Contest(
  
             
-#             name = request.json['name'],
-#             description = request.json['description'],
-#             id_user = flask_praetorian.current_user().id
+            name = request.json['name'],
+            image = request.json['image'],
+            url = request.json['name'],
+            
+            date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
+            date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
+            pay = request.json['pay'],
+            script = request.json['script'],
+            tips = request.json['tips'],
+            user_id = flask_praetorian.current_user().id
 
-#         )
+        )
 
-#     db.session.add(new_event)
+    db.session.add(new_contest)
 
-#     db.session.commit()
+    db.session.commit()
     
-#     return event_schema.dump(new_event)
+    return contest_schema.dump(new_contest)
 
 
 # @app.route("/api/events", methods=["GET"])
