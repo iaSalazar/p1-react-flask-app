@@ -114,7 +114,8 @@ def get_user(user_id):
     return user_schema.dump(user)
 
 @app.route("/api/contest/create", methods=["POST"])
-@flask_praetorian.auth_required
+#@flask_praetorian.auth_required
+@flask_praetorian.roles_required("admin")
 def add_event():
     """
     add new event
