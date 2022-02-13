@@ -6,6 +6,10 @@ import datetime
 from flask import request, jsonify
 
 import flask_praetorian
+import os
+import pathlib
+from werkzeug.utils import secure_filename
+import logging
 
 
 guard = flask_praetorian.Praetorian()
@@ -101,33 +105,52 @@ def get_user(user_id):
     print(user.roles)
     return user_schema.dump(user)
 
-@app.route("/api/contest/create", methods=["POST"])
+
+@app.route("/api/contests/create", methods=["POST"])
 #@flask_praetorian.auth_required
 @flask_praetorian.roles_required("admin")
 def add_event():
     """
-    add new event
+    add new contest
     """
-    
-    date_start_split = request.json['date_start'].split('-')
-    date_end_split = request.json['date_end'].split('-')
+    print(request.form['name'])
+    date_start_split = request.form['date_start'].split('-')
+    date_end_split = request.form['date_end'].split('-')
     print(type(date_start_split))
     print(date_start_split)
+
+    name = request.form['name']
+    user_id = flask_praetorian.current_user().id
+    uploaded_file = request.files['img_file']
+    filename = secure_filename(uploaded_file.filename)
+    #  contests/user-id/contest-name/banner
+    upload_path = './contests/user-{}/{}/contest-banner/'.format(user_id,name)
+    
+
+    if not os.path.isdir(upload_path):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(upload_path)
+        logging.info('Created directory {}'.format(upload_path))
+        
+
+    uploaded_file.save(os.path.join(upload_path, filename))
     new_contest = Contest(
  
             
-            name = request.json['name'],
-            image = request.json['image'],
-            url = request.json['name'],
+            name = name,
+            image = upload_path+filename,
+            url = request.form['name'],
             
             date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
             date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
-            pay = request.json['pay'],
-            script = request.json['script'],
-            tips = request.json['tips'],
-            user_id = flask_praetorian.current_user().id
+            pay = request.form['pay'],
+            script = request.form['script'],
+            tips = request.form['tips'],
+            user_id = user_id
 
         )
+    
 
     db.session.add(new_contest)
 
@@ -135,7 +158,31 @@ def add_event():
     
     return contest_schema.dump(new_contest)
 
+@app.route("/api/contests/url_update/<id_contest>", methods=["PUT"])
+def update_event_url(id_contest):
+    
+   
+    contest = Contest.query.get_or_404(id_contest)
 
+    if 'url' in request.json:
+
+        contest.url = request.json['url']
+
+    
+    
+    db.session.commit()
+    return contest_schema.dump(contest)
+
+
+@app.route("/api/contests/<contest_url>", methods=["GET"])
+def get_contest(contest_url):
+    """
+    Get specific contest
+    """
+    print(contest_url)
+    contest = Contest.query.filter(Contest.url == contest_url).first()
+    return contest_schema.dump(contest)
+    
 # @app.route("/api/events", methods=["GET"])
 # @flask_praetorian.auth_required
 # def get_all_event():
@@ -147,35 +194,10 @@ def add_event():
 #     id_user = flask_praetorian.current_user().id
 #     return jsonify(events_schema.dump(event))
 
-# @app.route("/api/events/<int:id_event>", methods=["GET"])
-# def get_event(id_event):
-#     """
-#     Get specific event
-#     """
-   
-#     event = Event.query.get_or_404(id_event)
-
-    
-
-#     return event_schema.dump(event)
 
 
-# @app.route("/api/events/<int:id_event>", methods=["PUT"])
-# def update_event(id_event):
-    
-   
-#     event = Event.query.get_or_404(id_event)
 
-#     if 'name' in request.json:
 
-#         event.titulo = request.json['name']
-
-#     if 'description' in request.json:
-
-#         event.contenido = request.json['description']
-    
-#     db.session.commit()
-#     return event_schema.dump(event)
 
 # @app.route("/api/events/<int:id_event>", methods=["DELETE"])
 # def delete_event(id_event):
