@@ -3,7 +3,7 @@ from api import app, db
 from models import User, Contest, user_schema, contest_schema
 
 import datetime
-from flask import request, jsonify, send_from_directory, make_response
+from flask import request, jsonify, send_from_directory
 
 import flask_praetorian
 import os
@@ -181,10 +181,7 @@ def get_contest(contest_url):
     """
     print(contest_url)
     contest = Contest.query.filter(Contest.url == contest_url).first()
-    # response = make_response("Line One\r\nLine Two\r\n")
-    # response.headers["Content-Disposition"] = "attachment; filename=" +"./contests/user-5/test/contest-banner/logo_andes.jpg"
-    # response.headers['X-Extra-Info-JSON'] = contest_schema.dump(contest)
-    # return send_from_directory("./contests/user-5/test/contest-banner/","logo_andes.jpg")
+   
     return contest_schema.dump(contest)
 
 @app.route("/api/contests/img/<contest_url>", methods=["GET"])
@@ -196,75 +193,3 @@ def get_contest_img(contest_url):
     contest = Contest.query.filter(Contest.url == contest_url).first()
     img_path = contest.image.rsplit("/",1)
     return send_from_directory(img_path[0],img_path[1])
-
-# @app.route("/api/events", methods=["GET"])
-# @flask_praetorian.auth_required
-# def get_all_event():
-#     """
-#     Get all events
-#     """
-    
-#     event = Event.query.filter(Event.id_user==flask_praetorian.current_user().id)
-#     id_user = flask_praetorian.current_user().id
-#     return jsonify(events_schema.dump(event))
-
-
-
-
-
-
-# @app.route("/api/events/<int:id_event>", methods=["DELETE"])
-# def delete_event(id_event):
-    
-   
-#     event = Event.query.get_or_404(id_event)
-
-#     db.session.delete(event)
-
-#     db.session.commit()
-
-#     return event_schema.dump(event)
-
-
-
-
-# class ResourceOneEvent(Resource):
-
-
-#     def get(self):
-
-#         event = Event.query.all()
-
-#         return event_schema.dump(event)
-#     # def get(self, id_event):
-
-#     #     event = Event.query.get_or_404(id_event)
-
-#     #     return event_schema.dump(event)
-
-#     def put(self):
-
-#         new_event = Event(
- 
-            
-#             name = request.json['name'],
-#             description = request.json['description']
-
-#         )
-#         db.session.add(new_event)
-
-#         db.session.commit()
-    
-#         return user_schema.dump(new_event)
-
-#     def delete(self, id_event):
-
-#         event = Event.query.get_or_404(id_event)
-
-#         db.session.delete(event)
-
-#         db.session.commit()
-
-#         return '', 204
-# api.add_resource(ResourceOneEvent, '/event')
-#api.add_resource(ResourceOneEvent, '/event/<int:id_event>')
