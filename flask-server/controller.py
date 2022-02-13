@@ -3,7 +3,7 @@ from api import app, db
 from models import User, Contest, user_schema, contest_schema
 
 import datetime
-from flask import request, jsonify
+from flask import request, jsonify, send_from_directory, make_response
 
 import flask_praetorian
 import os
@@ -181,8 +181,22 @@ def get_contest(contest_url):
     """
     print(contest_url)
     contest = Contest.query.filter(Contest.url == contest_url).first()
+    # response = make_response("Line One\r\nLine Two\r\n")
+    # response.headers["Content-Disposition"] = "attachment; filename=" +"./contests/user-5/test/contest-banner/logo_andes.jpg"
+    # response.headers['X-Extra-Info-JSON'] = contest_schema.dump(contest)
+    # return send_from_directory("./contests/user-5/test/contest-banner/","logo_andes.jpg")
     return contest_schema.dump(contest)
-    
+
+@app.route("/api/contests/img/<contest_url>", methods=["GET"])
+def get_contest_img(contest_url):
+    """
+    Get specific contest
+    """
+    print(contest_url)
+    contest = Contest.query.filter(Contest.url == contest_url).first()
+    img_path = contest.image.rsplit("/",1)
+    return send_from_directory(img_path[0],img_path[1])
+
 # @app.route("/api/events", methods=["GET"])
 # @flask_praetorian.auth_required
 # def get_all_event():
