@@ -1,13 +1,10 @@
 
 from api import app, db
 from models import User, Contest, user_schema, contest_schema
-
 import datetime
 from flask import request, jsonify, send_from_directory
-
 import flask_praetorian
 import os
-import pathlib
 from werkzeug.utils import secure_filename
 import logging
 
