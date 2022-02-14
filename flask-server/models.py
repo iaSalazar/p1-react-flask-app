@@ -53,8 +53,31 @@ class Contest(db.Model):
     tips = db.Column(db.Text)
     user_id = db.Column(Integer, db.ForeignKey('user.id'))
     user = db.relationship('User',back_populates = 'contests')
-    #voices = db.relationship('voice', back_populates='contest')
+    voices = db.relationship('Voice', back_populates='contest')
     
+
+
+class Voice(db.Model):
+    __tablename__ = 'voice'
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.Text)
+    second_name = db.Column(db.Text)
+    last_name = db.Column(db.Text)
+    email = db.Column(db.Text)
+    observations = db.Column(db.Text)
+    file_path = db.Column(db.Text)
+    transformed = db.Column(db.Boolean)
+    date_uploaded = db.Column(db.DateTime)
+    contest_id = db.Column(Integer, db.ForeignKey('contest.id'))
+    contest = db.relationship('Contest', back_populates='voices')
+###############################################
+###############################################3
+#SCHEMAS 
+class VoiceSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "file_path", "transformed", "date_uploaded", "contest_id")
+
+voice_schema = VoiceSchema()
 
 class ContestSchema(ma.Schema):
     class Meta:
@@ -63,9 +86,6 @@ class ContestSchema(ma.Schema):
 contest_schema = ContestSchema()
 contests_schema = ContestSchema(many = True)
 
-###############################################
-###############################################3
-#SCHEMAS 
 class UserSchema(ma.Schema):
     class Meta:
         fields = ("id", "first_name", "second_name", "last_name", "email", "password", "role")

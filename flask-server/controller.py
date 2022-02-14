@@ -1,6 +1,7 @@
 
+import uuid
 from api import app, db
-from models import User, Contest, user_schema, contest_schema
+from models import User, Contest, Voice, user_schema, contest_schema, voice_schema
 import datetime
 from flask import request, jsonify, send_from_directory
 import flask_praetorian
@@ -119,24 +120,13 @@ def add_event():
     name = request.form['name']
     user_id = flask_praetorian.current_user().id
     uploaded_file = request.files['img_file']
-    filename = secure_filename(uploaded_file.filename)
-    #  contests/user-id/contest-name/banner
-    upload_path = './contests/user-{}/{}/contest-banner/'.format(user_id,name)
+    filename = secure_filename('banner.jpg')
     
-
-    if not os.path.isdir(upload_path):
-        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
-        os.umask(0)
-        os.makedirs(upload_path)
-        logging.info('Created directory {}'.format(upload_path))
-        
-
-    uploaded_file.save(os.path.join(upload_path, filename))
     new_contest = Contest(
  
             
             name = name,
-            image = upload_path+filename,
+            image = 'not assigned',
             url = request.form['name'],
             
             date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
@@ -150,9 +140,24 @@ def add_event():
     
 
     db.session.add(new_contest)
+    db.session.flush()
+    db.session.commit()
+    #
+    #  contests/user-id/contest_banner/img.jpg
+    upload_path = './contests/{}/contest_banner/'.format(new_contest.id)
+
+    new_contest.image = upload_path+filename
 
     db.session.commit()
-    
+
+    if not os.path.isdir(upload_path):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(upload_path)
+        logging.info('Created directory {}'.format(upload_path))
+
+    uploaded_file.save(os.path.join(upload_path, filename))
+
     return contest_schema.dump(new_contest)
 
 @app.route("/api/contests/url_update/<id_contest>", methods=["PUT"])
@@ -171,22 +176,76 @@ def update_event_url(id_contest):
     return contest_schema.dump(contest)
 
 
-@app.route("/api/contests/<contest_url>", methods=["GET"])
-def get_contest(contest_url):
+@app.route("/api/contests/<int:contest_id>/<contest_url>", methods=["GET"])
+def get_contest(contest_id, contest_url):
     """
     Get specific contest
     """
     print(contest_url)
-    contest = Contest.query.filter(Contest.url == contest_url).first()
-   
+    # URL = contest_id+url_name
+    contest = Contest.query.filter((Contest.url == contest_url),(Contest.id == contest_id)).first()
+    #contest = Contest.query.get_or_404(contest_id)
     return contest_schema.dump(contest)
 
-@app.route("/api/contests/img/<contest_url>", methods=["GET"])
-def get_contest_img(contest_url):
+@app.route("/api/contests/<int:contest_id>/<contest_url>/banner", methods=["GET"])
+def get_contest_img(contest_id,contest_url):
     """
     Get specific contest
     """
     print(contest_url)
-    contest = Contest.query.filter(Contest.url == contest_url).first()
+    contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
+    print(contest.image)
     img_path = contest.image.rsplit("/",1)
+
+    logging.info('Getting banner image from {}'.format(contest.image))
+    
     return send_from_directory(img_path[0],img_path[1])
+
+
+@app.route("/api/contests/<int:contest_id>/<contest_url>/upload", methods=["POST"])
+def upload_voice(contest_id,contest_url):
+    """
+    add new voice
+    """
+    
+    
+    file_name = str(uuid.uuid4())
+    uploaded_file = request.files['audio_file']
+    extension = uploaded_file.content_type
+    
+    filename = secure_filename('{}.{}'.format(file_name,uploaded_file.filename.rsplit('.',1)[1]))
+
+    contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
+    # contests/user-id/voices/voice.xxx
+    upload_path = './contests/{}/voices/'.format(contest.id)
+    
+
+    if not os.path.isdir(upload_path):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(upload_path)
+        logging.info('Created directory {}'.format(upload_path))
+        
+
+    uploaded_file.save(os.path.join(upload_path, filename))
+    new_voice = Voice(
+ 
+            first_name = request.form['first_name'],
+            second_name = request.form['second_name'],
+            last_name = request.form['last_name'],
+            email = request.form['email'],
+            observations = request.form['observations'],
+            file_path = upload_path+filename,
+            transformed = False,
+            date_uploaded = datetime.datetime.now(),
+            contest_id = contest.id
+
+
+        )
+    
+
+    db.session.add(new_voice)
+
+    db.session.commit()
+    
+    return voice_schema.dump(new_voice)
