@@ -238,11 +238,7 @@ def upload_voice(contest_id,contest_url):
     if file_format == 'mp3':
         file_path_transformed = file_path_original
         transformed = True
-    else:
-        transform_audio_format.delay(file_path_original,file_path_transformed)
-    
-
-    new_voice = Voice(
+        new_voice = Voice(
  
             first_name = request.form['first_name'],
             second_name = request.form['second_name'],
@@ -257,11 +253,36 @@ def upload_voice(contest_id,contest_url):
 
 
         )
+        db.session.add(new_voice)
+
+        db.session.commit()
+    
+    else:
+        
+        new_voice = Voice(
+ 
+            first_name = request.form['first_name'],
+            second_name = request.form['second_name'],
+            last_name = request.form['last_name'],
+            email = request.form['email'],
+            observations = request.form['observations'],
+            file_path = file_path_transformed,
+            file_path_org = file_path_original,
+            transformed = transformed,
+            date_uploaded = datetime.datetime.now(),
+            contest_id = contest_id
+
+
+        )
+        db.session.add(new_voice)
+
+        db.session.flush()
+        transform_audio_format.delay(file_path_original,file_path_transformed, new_voice.id)
+        db.session.commit()
+
     
 
-    db.session.add(new_voice)
-
-    db.session.commit()
+    
     
     return voice_schema.dump(new_voice)
 
