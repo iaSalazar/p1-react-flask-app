@@ -1,5 +1,6 @@
 
 import uuid
+from webbrowser import get
 from api import app, db
 from models import User, Contest, Voice, user_schema, contest_schema, voice_schema, voices_schema
 import datetime
@@ -8,7 +9,7 @@ import flask_praetorian
 import os
 from werkzeug.utils import secure_filename
 import logging
-
+from tasks import transform_audio_format
 
 guard = flask_praetorian.Praetorian()
 
@@ -187,6 +188,7 @@ def get_contest(contest_id, contest_url):
     #contest = Contest.query.get_or_404(contest_id)
     return contest_schema.dump(contest)
 
+
 @app.route("/api/contests/<int:contest_id>/<contest_url>/banner", methods=["GET"])
 def get_contest_img(contest_id,contest_url):
     """
@@ -211,21 +213,19 @@ def upload_voice(contest_id,contest_url):
     
     file_name = str(uuid.uuid4())
     uploaded_file = request.files['audio_file']
-    extension = uploaded_file.content_type
     
     file_format = uploaded_file.filename.rsplit('.',1)[1]
-    filename = secure_filename('{}.{}'.format(file_name,file_format))
-
-    file_path = ''
+    file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
+    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,file_format))
+    
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
     # contests/user-id/voices/voice.xxx
     upload_path = './contests/{}/voices/'.format(contest_id)
 
+    file_path_original = upload_path+file_name_final
+    file_path_transformed = upload_path+file_name_transformed
     #in case the file is already mp3 format it will be considered as transformed
-    if file_format == 'mp3':
-        file_path = upload_path+filename
-        transformed = True
 
     if not os.path.isdir(upload_path):
         #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
@@ -233,8 +233,16 @@ def upload_voice(contest_id,contest_url):
         os.makedirs(upload_path)
         logging.info('Created directory {}'.format(upload_path))
         
+    if file_format == 'mp3':
+        file_path_transformed = file_path_original
+        transformed = True
+    else:
+        pass
+    transform_audio_format.delay(file_path_original,file_path_transformed)
 
-    uploaded_file.save(os.path.join(upload_path, filename))
+    
+
+    uploaded_file.save(os.path.join(upload_path, file_name_final))
     new_voice = Voice(
  
             first_name = request.form['first_name'],
@@ -242,8 +250,8 @@ def upload_voice(contest_id,contest_url):
             last_name = request.form['last_name'],
             email = request.form['email'],
             observations = request.form['observations'],
-            file_path = file_path,
-            file_path_org = upload_path+filename,
+            file_path = file_path_transformed,
+            file_path_org = file_path_original,
             transformed = transformed,
             date_uploaded = datetime.datetime.now(),
             contest_id = contest_id
@@ -292,6 +300,5 @@ def get_all_event(contest_id):
     """
     
     voices = Voice.query.filter(Voice.contest_id==contest_id)
-
     
     return jsonify(voices_schema.dump(voices))
