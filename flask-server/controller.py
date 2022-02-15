@@ -1,7 +1,7 @@
 
 import uuid
 from api import app, db
-from models import User, Contest, Voice, user_schema, contest_schema, voice_schema
+from models import User, Contest, Voice, user_schema, contest_schema, voice_schema, voices_schema
 import datetime
 from flask import request, jsonify, send_from_directory
 import flask_praetorian
@@ -190,7 +190,7 @@ def get_contest(contest_id, contest_url):
 @app.route("/api/contests/<int:contest_id>/<contest_url>/banner", methods=["GET"])
 def get_contest_img(contest_id,contest_url):
     """
-    Get specific contest
+    Get specific contest banner
     """
     print(contest_url)
     contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
@@ -213,12 +213,19 @@ def upload_voice(contest_id,contest_url):
     uploaded_file = request.files['audio_file']
     extension = uploaded_file.content_type
     
-    filename = secure_filename('{}.{}'.format(file_name,uploaded_file.filename.rsplit('.',1)[1]))
+    file_format = uploaded_file.filename.rsplit('.',1)[1]
+    filename = secure_filename('{}.{}'.format(file_name,file_format))
 
-    contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
+    file_path = ''
+    transformed = False
+    #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
     # contests/user-id/voices/voice.xxx
-    upload_path = './contests/{}/voices/'.format(contest.id)
-    
+    upload_path = './contests/{}/voices/'.format(contest_id)
+
+    #in case the file is already mp3 format it will be considered as transformed
+    if file_format == 'mp3':
+        file_path = upload_path+filename
+        transformed = True
 
     if not os.path.isdir(upload_path):
         #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
@@ -235,10 +242,11 @@ def upload_voice(contest_id,contest_url):
             last_name = request.form['last_name'],
             email = request.form['email'],
             observations = request.form['observations'],
-            file_path = upload_path+filename,
-            transformed = False,
+            file_path = file_path,
+            file_path_org = upload_path+filename,
+            transformed = transformed,
             date_uploaded = datetime.datetime.now(),
-            contest_id = contest.id
+            contest_id = contest_id
 
 
         )
@@ -249,3 +257,41 @@ def upload_voice(contest_id,contest_url):
     db.session.commit()
     
     return voice_schema.dump(new_voice)
+
+@app.route("/api/contests/<int:contest_id>/org/<int:voice_id>", methods=["GET"])
+@flask_praetorian.auth_required
+def get_voice_org(voice_id,contest_id):
+    """
+    get original voice file for downlaod or streaming
+    """
+    voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
+    print(voice.file_path)
+    file_path = voice.file_path_org.rsplit('/',1)
+    print(file_path)
+    return send_from_directory(file_path[0],file_path[1])
+
+@app.route("/api/contests/<int:contest_id>/trns/<int:voice_id>", methods=["GET"])
+@flask_praetorian.auth_required
+def get_voice(voice_id,contest_id):
+    """
+    get transformed (mp3) voice file for downlaod or streaming
+    """
+    voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
+    print(voice.file_path)
+    file_path = voice.file_path.rsplit('/',1)
+    print(file_path)
+    return send_from_directory(file_path[0],file_path[1])
+
+
+@app.route("/api/contests/<int:contest_id>/voices", methods=["GET"])
+@flask_praetorian.auth_required
+@flask_praetorian.roles_required("admin")
+def get_all_event(contest_id):
+    """
+    Get all voices metadata
+    """
+    
+    voices = Voice.query.filter(Voice.contest_id==contest_id)
+
+    
+    return jsonify(voices_schema.dump(voices))

@@ -9,8 +9,8 @@ class User(db.Model):
     first_name = db.Column(db.Text)
     second_name = db.Column(db.Text)
     last_name = db.Column(db.Text)
-    email = db.Column(db.Text)
-    username = db.Column(db.Text)
+    email = db.Column(db.Text, unique=True)
+    username = db.Column(db.Text, unique=True)
     password = db.Column(db.Text)
     roles = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True, server_default='true')
@@ -66,6 +66,7 @@ class Voice(db.Model):
     email = db.Column(db.Text)
     observations = db.Column(db.Text)
     file_path = db.Column(db.Text)
+    file_path_org = db.Column(db.Text)
     transformed = db.Column(db.Boolean)
     date_uploaded = db.Column(db.DateTime)
     contest_id = db.Column(Integer, db.ForeignKey('contest.id'))
@@ -75,9 +76,10 @@ class Voice(db.Model):
 #SCHEMAS 
 class VoiceSchema(ma.Schema):
     class Meta:
-        fields = ("id", "file_path", "transformed", "date_uploaded", "contest_id")
+        fields = ("id", "file_path", "file_path_org", "transformed", "date_uploaded", "contest_id")
 
 voice_schema = VoiceSchema()
+voices_schema = VoiceSchema(many = True)
 
 class ContestSchema(ma.Schema):
     class Meta:
