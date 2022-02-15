@@ -216,7 +216,7 @@ def upload_voice(contest_id,contest_url):
     
     file_format = uploaded_file.filename.rsplit('.',1)[1]
     file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
-    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,file_format))
+    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
     
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
@@ -232,17 +232,16 @@ def upload_voice(contest_id,contest_url):
         os.umask(0)
         os.makedirs(upload_path)
         logging.info('Created directory {}'.format(upload_path))
-        
+
+    uploaded_file.save(os.path.join(upload_path, file_name_final))
+
     if file_format == 'mp3':
         file_path_transformed = file_path_original
         transformed = True
     else:
-        pass
-    transform_audio_format.delay(file_path_original,file_path_transformed)
-
+        transform_audio_format.delay(file_path_original,file_path_transformed)
     
 
-    uploaded_file.save(os.path.join(upload_path, file_name_final))
     new_voice = Voice(
  
             first_name = request.form['first_name'],
@@ -273,7 +272,7 @@ def get_voice_org(voice_id,contest_id):
     get original voice file for downlaod or streaming
     """
     voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
-    print(voice.file_path)
+    print(voice.file_path_org)
     file_path = voice.file_path_org.rsplit('/',1)
     print(file_path)
     return send_from_directory(file_path[0],file_path[1])
@@ -288,13 +287,14 @@ def get_voice(voice_id,contest_id):
     print(voice.file_path)
     file_path = voice.file_path.rsplit('/',1)
     print(file_path)
+    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp4')
     return send_from_directory(file_path[0],file_path[1])
 
 
 @app.route("/api/contests/<int:contest_id>/voices", methods=["GET"])
 @flask_praetorian.auth_required
 @flask_praetorian.roles_required("admin")
-def get_all_event(contest_id):
+def get_all_voices(contest_id):
     """
     Get all voices metadata
     """
