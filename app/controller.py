@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 import logging
 from tasks import transform_audio_format
 
+
 guard = flask_praetorian.Praetorian()
 
 guard.init_app(app, User)
@@ -308,7 +309,7 @@ def get_voice(voice_id,contest_id):
     print(voice.file_path)
     file_path = voice.file_path.rsplit('/',1)
     print(file_path)
-    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp4')
+    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp3')
     return send_from_directory(file_path[0],file_path[1])
 
 

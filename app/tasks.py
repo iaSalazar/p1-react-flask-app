@@ -3,6 +3,8 @@ import zipfile
 from celery import Celery
 import sqlite3
 import ffmpeg
+from flask_mail import Mail, Message
+#from api import mail
 
 app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
@@ -33,6 +35,12 @@ def transform_audio_format(url_original, url_destiny, voice_id):
                 # record = cursor.fetchall()
                 print('updated') 
                 cursor.close()
+
+                # msg = Message(subject="Proyecto1",
+                # sender='vaca3245@gmail.com',
+                # recipients=["vaca3245@gmail.com"], # replace with your email for testing
+                # body="This is a test email I sent with Gmail and Python!")
+                # mail.send(msg)
                  
 
 
