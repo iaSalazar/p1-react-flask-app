@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow  
-
+import flask_cors 
 
 
 app = Flask(__name__)#, static_folder="../build", static_url_path="/")
@@ -16,7 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
 
 
-
+cors = flask_cors.CORS(app)
 db = SQLAlchemy(app) 
 ma = Marshmallow(app)
 
