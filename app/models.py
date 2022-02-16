@@ -74,9 +74,10 @@ class Voice(db.Model):
 ###############################################
 ###############################################3
 #SCHEMAS 
+
 class VoiceSchema(ma.Schema):
     class Meta:
-        fields = ("id", "file_path", "file_path_org", "transformed", "date_uploaded", "contest_id")
+        fields = ("id", "file_path", "file_path_org", "transformed", "date_uploaded", "contest_id", "first_name", "second_name","last_name","email", "observations", "transformed")
 
 voice_schema = VoiceSchema()
 voices_schema = VoiceSchema(many = True)
