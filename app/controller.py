@@ -2,7 +2,7 @@
 import uuid
 from webbrowser import get
 from api import app, db
-from models import User, Contest, Voice, user_schema, contest_schema, voice_schema, voices_schema
+from models import User, Contest, Voice, user_schema, contest_schema, contests_schema, voice_schema, voices_schema
 import datetime
 from flask import request, jsonify, send_from_directory
 import flask_praetorian
@@ -113,6 +113,7 @@ def add_event():
     """
     add new contest
     """
+    
     print(request.form['name'])
     date_start_split = request.form['date_start'].split('-')
     date_end_split = request.form['date_end'].split('-')
@@ -130,7 +131,6 @@ def add_event():
             name = name,
             image = 'not assigned',
             url = request.form['name'],
-            
             date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
             date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
             pay = request.form['pay'],
@@ -188,6 +188,17 @@ def get_contest(contest_id, contest_url):
     contest = Contest.query.filter((Contest.url == contest_url),(Contest.id == contest_id)).first()
     #contest = Contest.query.get_or_404(contest_id)
     return contest_schema.dump(contest)
+
+
+@app.route("/api/contests/user/<int:user_id>/list", methods=["GET"])
+def get_all_contest(user_id):
+    """
+    Get all contests metadata
+    """
+    
+    contests = Contest.query.filter(Contest.user_id == user_id).all()
+    
+    return jsonify(contests_schema.dump(contests))
 
 
 @app.route("/api/contests/<int:contest_id>/<contest_url>/banner", methods=["GET"])
@@ -278,7 +289,8 @@ def upload_voice(contest_id,contest_url):
         db.session.add(new_voice)
 
         db.session.flush()
-        transform_audio_format.delay(file_path_original,file_path_transformed, new_voice.id)
+        transform_audio_format.delay(file_path_original,file_path_transformed, new_voice.id, new_voice.email,\
+             new_voice.first_name+' '+new_voice.last_name,'/{}/{}'.format(contest_id,contest_url))
         db.session.commit()
 
     
@@ -302,6 +314,19 @@ def get_voice_org(voice_id,contest_id):
 @app.route("/api/contests/<int:contest_id>/trns/<int:voice_id>", methods=["GET"])
 @flask_praetorian.auth_required
 def get_voice(voice_id,contest_id):
+    """
+    get transformed (mp3) voice file for downlaod or streaming
+    """
+    voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
+    print(voice.file_path)
+    file_path = voice.file_path.rsplit('/',1)
+    print(file_path)
+    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp3')
+    return send_from_directory(file_path[0],file_path[1])
+
+
+@app.route("/api/contests/<int:contest_id>/play/<int:voice_id>", methods=["GET"])
+def get_play_voice(voice_id,contest_id):
     """
     get transformed (mp3) voice file for downlaod or streaming
     """

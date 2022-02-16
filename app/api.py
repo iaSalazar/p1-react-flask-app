@@ -2,9 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy 
 from flask_marshmallow import Marshmallow  
 import flask_cors 
-from flask_mail import Mail, Message 
 
-mail = Mail()
+
 app = Flask(__name__)#, static_folder="../build", static_url_path="/")
 
 
@@ -17,16 +16,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
 app.app_context()
 
-mail_settings = {
-    "MAIL_SERVER": 'smtp.gmail.com',
-    "MAIL_PORT": 465,
-    "MAIL_USE_TLS": False,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": '',
-    "MAIL_PASSWORD": ''
-}
 
-app.config.update(mail_settings)
+
 
 
 
@@ -40,7 +31,7 @@ db.init_app(app)
 from models import *
 from controller import *
 
-mail.init_app(app)
+
 if __name__ == '__main__':
     app.run(debug=True)
 

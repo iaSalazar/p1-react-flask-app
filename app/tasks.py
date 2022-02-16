@@ -3,14 +3,18 @@ import zipfile
 from celery import Celery
 import sqlite3
 import ffmpeg
-from flask_mail import Mail, Message
-#from api import mail
+from sqlalchemy import create_engine, MetaData
+import yagmail
 
 app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
+# engine = create_engine("sqlite:///test.db", echo=True, future=True)
+# connection = engine.connect()
+# metadata = MetaData()
 
 @app.task
-def transform_audio_format(url_original, url_destiny, voice_id):
+def transform_audio_format(url_original, url_destiny, voice_id, email, name, url):
+
         url_new_file_format = url_destiny.rsplit('.',1)[0]+'.mp3'
        
         print(url_original)
@@ -35,12 +39,13 @@ def transform_audio_format(url_original, url_destiny, voice_id):
                 # record = cursor.fetchall()
                 print('updated') 
                 cursor.close()
+                #initializing the server connection
+                yag = yagmail.SMTP(user='cloud5202010@gmail.com', password='12345ASDF')
+                #sending the email
+                yag.send(to= email, subject='Thanks for participating with your voice', contents='Hi {} your audio is already posted in the contes page {} !'.format(name, url))
+                print("Email sent successfully")
 
-                # msg = Message(subject="Proyecto1",
-                # sender='vaca3245@gmail.com',
-                # recipients=["vaca3245@gmail.com"], # replace with your email for testing
-                # body="This is a test email I sent with Gmail and Python!")
-                # mail.send(msg)
+
                  
 
 
