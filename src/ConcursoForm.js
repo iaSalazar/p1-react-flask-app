@@ -1,5 +1,5 @@
 import React from 'react'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 function ConcursoForm() {
 
 
@@ -30,31 +30,62 @@ function ConcursoForm() {
 //the form data is all the collected form information and image banner
   const formData = new FormData()
   formData.append("file", file)
-  formData.append("form", description)
+  formData.append("form", form)
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setClick(!click)
     console.log(formData);
   }
+
+  useEffect(() =>{
+    const requestOptions ={
+      method:'POST'
+    }
+  },[click])
 
   return (
     <div>C
     
     <label>
-      Contest Name
+      Nombre Concurso
       <input name="name" onChange={handleChange} />
     </label>
     <br />
     <label>
-      Identifier
+      Identificador
       <input name="url" onChange={handleChange} />
     </label>
-    <input
-          filename={file} 
-          onChange={e => setFile(e.target.files[0])} 
-          type="file" 
-          accept="image/*"
-    ></input>
+    <label>
+      Fecha Inicio
+      <input name="date_start" onChange={handleChange} type="date" />
+    </label>
+    <label>
+      Fecha Fin
+      <input name="date_end" onChange={handleChange} type="date" />
+    </label>
+    <label>
+      Premio
+      <input name="pay" onChange={handleChange} type="number"/>
+    </label>
+    <label>
+      Guión
+      <textarea name="script" onChange={handleChange} type="textarea" rows="7" cols="70"/>
+    </label>
+    <label>
+      Tips
+      <textarea name="tips" onChange={handleChange} type="textarea" rows="7" cols="70"/>
+    </label>
+    <label>
+      Banner
+      <input
+            filename={file} 
+            onChange={e => setFile(e.target.files[0])} 
+            type="file" 
+            name="img_file"
+            accept="image/*"
+      ></input>
+    </label>
     <br />
     <button onClick={handleSubmit}>Submit</button>
       
