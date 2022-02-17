@@ -5,28 +5,32 @@ import Concurso from './Concurso'
 
 function ConcursoList(props) {
 
-    const apiLink = "no link"
+    const apiLink = "http://127.0.0.1:5000/api/contests/user/1/list"
     const adminLink = "admin"
 
-    const [concursos, setConcursos] = useState()
+    const [concursos, setConcursos] = useState([])
     const [click, setClick] = useState(0)
     const [selected, setSelected] = useState()
     const [admin, setAdmin] = useState()
+
     const initialState={
         name:"Concurso",
         admin: "Admin"
     }
     useEffect(() =>{
+        console.log("HOLAAAAAAAAAAAAAAAAAAAAa")
         fetch(apiLink).then((res) => res.json()).then( (apires) => {
             console.log(apires)
             setConcursos(apires)
+            console.log(concursos)
         })
-        fetch(adminLink).then((res) => res.json()).then( (apires) => {
-            console.log(apires)
-            setAdmin(apires)
-        })
-    })
+        // fetch(adminLink).then((res) => res.json()).then( (apires) => {
+        //     console.log(apires)
+        //     setAdmin(apires)
+        // })
+    },[])
 
+    
     const handleClick = () => setClick(!click)
     const handleSelected = (concurso) => {  setSelected(concurso)
                                             setClick(!click)}
