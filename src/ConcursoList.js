@@ -32,6 +32,7 @@ function ConcursoList(props) {
 
     
     const handleClick = () => setClick(!click)
+    const navi = () => navigate("/Voice")
     const handleSelected = (concurso) => {  setSelected(concurso)
                                             setClick(!click)}
   return (
