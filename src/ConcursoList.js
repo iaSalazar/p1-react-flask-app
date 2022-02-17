@@ -23,7 +23,7 @@ function ConcursoList(props) {
         })
         fetch(adminLink).then((res) => res.json()).then( (apires) => {
             console.log(apires)
-            setConcursos(apires)
+            setAdmin(apires)
         })
     })
 
@@ -32,7 +32,7 @@ function ConcursoList(props) {
                                             setClick(!click)}
   return (
     <div>    
-    <h1> {initialState.admin} style={}</h1>
+    <h1> {admin}</h1>
 
         <Table striped bordered hover>
         <thead>

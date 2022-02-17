@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from 'react-bootstrap/Table'
+import Button from 'react-bootstrap/Button'
 import ConcursoList from './ConcursoList'
 import ConcursoForm from './ConcursoForm'
 import {useState} from './react'
@@ -13,7 +13,7 @@ function AdminHome() {
     
     <div>
         <p>Concursos</p>
-        <Button variant="outline-primary" onClick={handleClick}> Agregar</Button>
+        <Button variant="primary" onClick={handleClick}> Agregar</Button>
         {click? <ConcursoList/>: <ConcursoForm/>}
 
         
