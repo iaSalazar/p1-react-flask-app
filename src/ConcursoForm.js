@@ -35,7 +35,10 @@ function ConcursoForm() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setClick(!click)
-    console.log(formData);
+    console.log([formData]);
+    for (let [key, value] of formData) {
+      console.log(`${key}: ${value}`)
+    }
   }
 
   useEffect(() =>{
