@@ -2,10 +2,18 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import Table from 'react-bootstrap/Table'
 import Concurso from './Concurso'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Navigate,
+    useNavigate,
+    Link
+  } from "react-router-dom";
 
 function ConcursoList(props) {
-
-    const apiLink = "http://127.0.0.1:5000/api/contests/user/1/list"
+    //let navigate = useNavigate();
+    const apiLink = "/api/contests/user/1/list"
     const adminLink = "admin"
 
     const [concursos, setConcursos] = useState([])
@@ -32,7 +40,7 @@ function ConcursoList(props) {
 
     
     const handleClick = () => setClick(!click)
-    const navi = () => navigate("/Voice")
+    //const navi = () => navigate("/Voice")
     const handleSelected = (concurso) => {  setSelected(concurso)
                                             setClick(!click)}
   return (
