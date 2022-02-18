@@ -6,7 +6,7 @@
 
       const baseURL=""
 
-      const link = "http://127.0.0.1:5000/api/contests/1/play/103"
+      const link = "/api/contests/1/play/103"
 
       const [click, setClick] = useState(0)
       const [selected, setSelected] = useState()

@@ -13,6 +13,7 @@ import {
 
 function ConcursoList(props) {
     //let navigate = useNavigate();
+    //const { id_user } = this.props.match.params.id_user
     const apiLink = "/api/contests/user/1/list"
     const adminLink = "admin"
 

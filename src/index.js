@@ -22,7 +22,8 @@ import {
   <Routes>
     <Route path="/" element={<Login />} />
     <Route path="/AdminHome" element={<AdminHome />} />
-    
+     {/* pagina concurso */}
+    <Route path="/api/contests/:id_contest/:contest_url" element={<VoiceHome />} />
     {/* <Route path="/blog" element={<Blog />}>
       <Route path="" element={<Posts />} />
       <Route path=":postSlug" element={<Post />} />
