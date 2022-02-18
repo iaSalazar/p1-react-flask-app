@@ -6,16 +6,18 @@ services:
       context: .
       dockerfile: Dockerfile.api
     image: react-flask-app-api
+    volumes:
+      - "${PWD}/test:/app"
     ports:
     - "5000:5000"
   redis:
     image: redis:6.2-alpine
     restart: always
     ports:
-      - '6379:6379'
+      - '6380:6379'
     command: redis-server && celery -A tasks worker -l info
-    # volumes: 
-    #   - cache:/data
+    volumes: 
+      - "${PWD}/cache:/data"
    
   # client:
   #   restart: always

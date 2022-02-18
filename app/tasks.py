@@ -6,7 +6,8 @@ import ffmpeg
 from sqlalchemy import create_engine, MetaData
 import yagmail
 
-app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
+#app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
+app = Celery('tasks', broker='redis://redis:6379/0')
 app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
 # engine = create_engine("sqlite:///test.db", echo=True, future=True)
 # connection = engine.connect()
