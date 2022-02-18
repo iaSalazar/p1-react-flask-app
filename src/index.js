@@ -3,12 +3,35 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import AdminHome from './AdminHome'
-ReactDOM.render(
+import VoiceHome from './Voice'
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  AdminHome,
+  Login
+} from "./components";
+
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <VoiceHome />
+//   </React.StrictMode>,
+//   document.getElementById('root')
+// );
+ ReactDOM.render(<Router>
   
-    <AdminHome />
-  ,
-  document.getElementById('root')
+  <Routes>
+    <Route path="/" element={<Login />} />
+    <Route path="/AdminHome" element={<AdminHome />} />
+    
+    {/* <Route path="/blog" element={<Blog />}>
+      <Route path="" element={<Posts />} />
+      <Route path=":postSlug" element={<Post />} />
+    </Route> */}
+  </Routes>
+  
+</Router>,
+
+document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
