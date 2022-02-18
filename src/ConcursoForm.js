@@ -43,8 +43,11 @@ function ConcursoForm() {
 
   useEffect(() =>{
     const requestOptions ={
-      method:'POST'
+      method:'POST',
+      body:formData
     }
+    fetch("api/contests/create",
+          requestOptions)
   },[click])
 
   return (

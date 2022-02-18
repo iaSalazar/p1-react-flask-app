@@ -14,7 +14,7 @@
                                               setClick(!click)}
       
       useEffect(() =>{
-          fetch(BaseURL).then((res) => res.json()).then( (apires) => {
+          fetch(baseURL).then((res) => res.json()).then( (apires) => {
               console.log(apires)
               setAudio(apires)
           })
