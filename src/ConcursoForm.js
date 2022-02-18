@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
+import {login, authFetch, useAuth, logout} from "./auth"
 function ConcursoForm() {
 
 
@@ -74,7 +75,7 @@ function ConcursoForm() {
       method:'POST',
       body:formData
     }
-    fetch("api/contests/create",
+    authFetch("api/contests/create",
           requestOptions)
   },[click])
 

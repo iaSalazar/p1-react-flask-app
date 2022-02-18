@@ -7,7 +7,7 @@ function Concurso(props) {
   return (
     
       <tr onClick ={() => {props.selected(props.concurso);console.log('HOLAAAAACASDAF$#')}} >
-      <td>{props.id}</td>
+      <td>{props.concurso.id}</td>
       <td>{props.concurso.name}</td>
       <td>{props.concurso.date_start}</td>
       <td>{props.concurso.date_end}</td>

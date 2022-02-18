@@ -1,16 +1,18 @@
 import React from 'react'
 import Voice from './Voice'
 import {useState, useEffect} from 'react'
+import Table from 'react-bootstrap/Table'
 
 
-function VoiceList() {
+function VoiceList(props) {
 
-  const apiLink = "/api/contests/1/voices"
+  const apiLink = "http://127.0.0.1:5000/api/contests/1/voices"
   // const adminLink = "admin"
 
   const [voices, setVoices] = useState([])
   const [click, setClick] = useState(0)
   const [admin, setAdmin] = useState()
+  const [selected, setSelected] = useState()
  
   useEffect(() =>{
     
@@ -31,7 +33,6 @@ function VoiceList() {
         name:"Concurso",
         admin: "Admin"
     }
-    const [admin, setAdmin] = useState()
   return (
       <div>    
     <h1> {admin}</h1>
@@ -45,7 +46,7 @@ function VoiceList() {
             </tr>
         </thead>
         <tbody>
-            {voices?.map((e,i) =>(<Voice voice={e} id={i} selected={handleSelected} remove={handleClick} />))}
+            {voices?.map((e,i) =>(<Voice voic={e} id={i} selected={handleSelected} remove={handleClick} />))}
         </tbody>
         </Table>
         {click ? "":""}

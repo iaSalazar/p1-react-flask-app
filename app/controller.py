@@ -107,8 +107,8 @@ def get_user(user_id):
 
 
 @app.route("/api/contests/create", methods=["POST"])
-#@flask_praetorian.auth_required
-#@flask_praetorian.roles_required("admin")
+@flask_praetorian.auth_required
+@flask_praetorian.roles_required("admin")
 def add_event():
     """
     add new contest
@@ -136,7 +136,7 @@ def add_event():
             pay = request.form['pay'],
             script = request.form['script'],
             tips = request.form['tips'],
-            user_id = 1
+            user_id = user_id
 
         )
     

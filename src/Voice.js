@@ -33,9 +33,9 @@
       return (
         <div>
         <td>{props.id}</td>
-        <td>{props.voice.name}</td>
-        <td>{props.voice.email}</td>
-        <td>{props.voice.url}</td>
+        <td>{props.voic.first_name + " " + props.voic.last_name}</td>
+        <td>{props.voic.email}</td>
+        <td>{props.voic.trabsformed}</td>
         <td><Button variant="success" onClick={() => {props.selected(props.voice)}}> Play</Button></td>
         <audio id="audio" controls preload="auto">
           <source src={blob.src} type="audio/mp3" />
