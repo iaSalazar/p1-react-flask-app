@@ -14,7 +14,7 @@ function AdminHome() {
   return (
     
     <div>
-        <p>Concursos</p>
+        <p>Concurso</p>
         <section style='display:inline-block  jus'>
             <Button variant="primary" onClick={handleClick}> Agregar</Button>
             <Button variant="primary" onClick={handleClick} style='display:flex align-items:left padding:1rem'> Info</Button>
