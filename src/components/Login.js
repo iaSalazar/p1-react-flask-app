@@ -7,8 +7,8 @@ import {
   Navigate,
   Link
 } from "react-router-dom";
-import {login, useAuth, logout} from '../auth/auth_handler'
 import validator from 'validator'
+import {login, authFetch, useAuth, logout} from "../auth"
 
 export default function Login() {
 
@@ -19,7 +19,7 @@ export default function Login() {
     last_name: "",
     email: "",
     password: "",
-    roles: "",
+    roles: "Admin",
 
   });
 
@@ -152,42 +152,36 @@ export default function Login() {
             value={password}
           />
         </div>
-        <button onClick={onSubmitClick} type="submit" disabled={emailError==='Enter valid Email!'}>
+        <button onClick={onSubmitClick} type="submit">
           Login Now
         </button>
       </form>
       //:<button onClick={() => logout()}>Logout</button>}
       : <Navigate to ="/AdminHome"/>}
+      
       <form action="#">
       <label>
-      Nombre Concurso
+      First Name
       <input name="name" onChange={handleChange} />
     </label>
     <br />
     <label>
-      Identificador
+      Second Name
       <input name="url" onChange={handleChange} />
     </label>
     <label>
-      Fecha Inicio
+      Last Name
       <input name="date_start" onChange={handleChange} type="date" />
     </label>
     <label>
-      Fecha Fin
+      Email
       <input name="date_end" onChange={handleChange} type="date" />
     </label>
     <label>
-      Premio
+      Password
       <input name="pay" onChange={handleChange} type="number"/>
     </label>
-    <label>
-      Guión
-      <textarea name="script" onChange={handleChange} type="textarea" rows="7" cols="70"/>
-    </label>
-    <label>
-      Tips
-      <textarea name="tips" onChange={handleChange} type="textarea" rows="7" cols="70"/>
-    </label>
+    
         <button onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
           singUp
         </button>
