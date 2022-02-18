@@ -44,9 +44,8 @@ function ConcursoForm() {
   const handleScript = (e) => {
     setScript(e.target.value.trim())
   }
-
   const handleTips = (e) =>{
-    setTips(e.target.files(0))
+    setTips(e.target.value.trim())
   }
 //the form data is all the collected form information and image banner
   const formData = new FormData()
