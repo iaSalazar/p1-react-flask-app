@@ -5,23 +5,24 @@ import {useState, useEffect} from 'react'
 
 function VoiceList() {
 
-  const apiLink = "no link"
-  const adminLink = "admin"
+  const apiLink = "http://127.0.0.1:5000/api/contests/1/voices"
+  // const adminLink = "admin"
 
-  const [voices, setVoices] = useState()
+  const [voices, setVoices] = useState([])
   const [click, setClick] = useState(0)
   const [admin, setAdmin] = useState()
  
   useEffect(() =>{
+    
       fetch(apiLink).then((res) => res.json()).then( (apires) => {
           console.log(apires)
           setVoices(apires)
       })
-      fetch(adminLink).then((res) => res.json()).then( (apires) => {
-          console.log(apires)
-          setAdmin(apires)
-      })
-  })
+    //   fetch(adminLink).then((res) => res.json()).then( (apires) => {
+    //       console.log(apires)
+    //       setAdmin(apires)
+    //   })
+  },[])
 
   const handleClick = () => setClick(!click)
   const handleSelected = (concurso) => {  setSelected(concurso)

@@ -339,8 +339,6 @@ def get_play_voice(voice_id,contest_id):
 
 
 @app.route("/api/contests/<int:contest_id>/voices", methods=["GET"])
-@flask_praetorian.auth_required
-@flask_praetorian.roles_required("admin")
 def get_all_voices(contest_id):
     """
     Get all voices metadata

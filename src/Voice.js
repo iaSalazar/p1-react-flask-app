@@ -1,11 +1,12 @@
     import React from 'react'
     import {useState, useEffect} from 'react'
-    
+    import Button from 'react-bootstrap/Button'
+
     function Voice(props) {
 
       const baseURL=""
 
-      const link = "http://127.0.0.1:5000/api/contests/<int:contest_id>/trns/<int:voice_id>"
+      const link = "http://127.0.0.1:5000/api/contests/1/play/103"
 
       const [click, setClick] = useState(0)
       const [selected, setSelected] = useState()
@@ -22,22 +23,19 @@
             console.log(data) 
             var objectURL = URL.createObjectURL(data)
             multimedia.src = objectURL
-            console.log(audio.src)
+            console.log(multimedia.src)
             console.log(blob.src)
             })
 
-          fetch(BaseURL).then((res) => res.json()).then( (apires) => {
-              console.log(apires)
-              setAudio(apires)
-          })
+          
       })
 
       return (
         <div>
         <td>{props.id}</td>
-        <td>{props.concurso.name}</td>
-        <td>{props.concurso.email}</td>
-        <td>{props.concurso.url}</td>
+        <td>{props.voice.name}</td>
+        <td>{props.voice.email}</td>
+        <td>{props.voice.url}</td>
         <td><Button variant="success" onClick={() => {props.selected(props.voice)}}> Play</Button></td>
         <audio id="audio" controls preload="auto">
           <source src={blob.src} type="audio/mp3" />

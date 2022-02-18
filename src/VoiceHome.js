@@ -20,7 +20,7 @@ function AdminHome() {
             <Button variant="primary" onClick={handleClick} style='display:flex align-items:left padding:1rem'> Info</Button>
         </section>
         {console.log(window.location.href)}
-        {infoClick? (click? <VoiceList/>: <VoiceForm/>):<div/>}
+        {click? <VoiceList/>: <VoiceForm/>}
 
         
     </div>
