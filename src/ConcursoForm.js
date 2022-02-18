@@ -14,23 +14,51 @@ function ConcursoForm() {
     img_file: "",
 
   });
-  const [form, updateForm] = useState(initialFormData)
   const [click, setClick] = useState(0)
-  const [file, setFile] = useState()
+  const [name, setName] = useState()
+  const [img_file, setFile] = useState()
+  const [url, setUrl] = useState()
+  const [date_start, setDateS] = useState()
+  const [date_end, setDateE] = useState()
+  const [pay, setPay] = useState()
+  const [script, setScript] = useState()
+  const [tips, setTips] = useState()
+  
 
-  const handleChange = (e) => {
-    updateForm({
-      ...form,
-      [e.target.name]: e.target.value.trim()
-    })
+
+  const handleName = (e) => {
+     setName(e.target.value.trim())
   }
-  const handleFile = (e) =>{
-    setFile(e.target.files(0))
+  const handleUrl = (e) => {
+    setUrl(e.target.value.trim())
+  }
+  const handleDateS = (e) => {
+    setDateS(e.target.value.trim())
+  }
+  const handleDateE = (e) => {
+    setDateE(e.target.value.trim())
+  }
+  const handlePay = (e) => {
+    setPay(e.target.value.trim())
+  }
+  const handleScript = (e) => {
+    setScript(e.target.value.trim())
+  }
+
+  const handleTips = (e) =>{
+    setTips(e.target.files(0))
   }
 //the form data is all the collected form information and image banner
   const formData = new FormData()
-  formData.append("file", file)
-  formData.append("form", form)
+  formData.append("img_file", img_file)
+  formData.append("name", name)
+  formData.append("url", url)
+  formData.append("date_start", date_start)
+  formData.append("date_end", date_end)
+  formData.append("pay", pay)
+  formData.append("script", script)
+  formData.append("tips", tips)
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -56,37 +84,37 @@ function ConcursoForm() {
     
     <label>
       Nombre Concurso
-      <input name="name" onChange={handleChange} />
+      <input name="name" onChange={handleName} />
     </label>
     <br />
     <label>
       Identificador
-      <input name="url" onChange={handleChange} />
+      <input name="url" onChange={handleUrl} />
     </label>
     <label>
       Fecha Inicio
-      <input name="date_start" onChange={handleChange} type="date" />
+      <input name="date_start" onChange={handleDateS} type="date" />
     </label>
     <label>
       Fecha Fin
-      <input name="date_end" onChange={handleChange} type="date" />
+      <input name="date_end" onChange={handleDateE} type="date" />
     </label>
     <label>
       Premio
-      <input name="pay" onChange={handleChange} type="number"/>
+      <input name="pay" onChange={handlePay} type="number"/>
     </label>
     <label>
       Guión
-      <textarea name="script" onChange={handleChange} type="textarea" rows="7" cols="70"/>
+      <textarea name="script" onChange={handleScript} type="textarea" rows="7" cols="70"/>
     </label>
     <label>
       Tips
-      <textarea name="tips" onChange={handleChange} type="textarea" rows="7" cols="70"/>
+      <textarea name="tips" onChange={handleTips} type="textarea" rows="7" cols="70"/>
     </label>
     <label>
       Banner
       <input
-            filename={file} 
+            filename={img_file} 
             onChange={e => setFile(e.target.files[0])} 
             type="file" 
             name="img_file"
