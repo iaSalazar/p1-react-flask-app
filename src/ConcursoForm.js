@@ -1,7 +1,7 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
 import {login, authFetch, useAuth, logout} from "./auth"
-function ConcursoForm() {
+function ConcursoForm(props) {
 
 
   const initialFormData = Object.freeze({
@@ -63,6 +63,7 @@ function ConcursoForm() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setClick(!click)
+    props.clickback(1)
     console.log([formData]);
     for (let [key, value] of formData) {
       console.log(`${key}: ${value}`)

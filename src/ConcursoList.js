@@ -22,10 +22,6 @@ function ConcursoList(props) {
     const [selected, setSelected] = useState()
     const [admin, setAdmin] = useState()
 
-    const initialState={
-        name:"Concurso",
-        admin: "Admin"
-    }
     useEffect(() =>{
         console.log("HOLAAAAAAAAAAAAAAAAAAAAa")
         fetch(apiLink).then((res) => res.json()).then( (apires) => {

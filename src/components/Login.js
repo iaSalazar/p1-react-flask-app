@@ -95,7 +95,7 @@ export default function Login() {
     if (validator.isEmail(email)) {
       setEmailError('Valid Email :)')
     } else {
-      setEmailError('Enter valid Email!')
+      setEmailError('')
     }
   }
 
@@ -104,7 +104,7 @@ export default function Login() {
       setEmailError('Valid Email :)')
       setUsername(e.target.value)
     } else {
-      setEmailError('Enter valid Email!')
+      setEmailError('')
     }
     setUsername(e.target.value)
   }
@@ -117,7 +117,7 @@ export default function Login() {
       setEmailError('Valid Email :)')
       setUsername(e.target.value)
     } else {
-      setEmailError('Enter valid Email!')
+      setEmailError('')
     }
     setSingUsername(e.target.value)
   }
@@ -171,11 +171,11 @@ export default function Login() {
     </label>
     <label>
       Last Name
-      <input name="date_start" onChange={handleChange} type="date" />
+      <input name="last_name" onChange={handleChange} />
     </label>
     <label>
       Email
-      <input name="date_end" onChange={handleChange} type="date" />
+      <input name="email" onChange={handleChange}/>
     </label>
     <label>
       Password

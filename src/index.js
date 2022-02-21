@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import VoiceHome from './Voice'
+import VoiceHome from './VoiceHome'
+
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -23,7 +24,7 @@ import {
     <Route path="/" element={<Login />} />
     <Route path="/AdminHome" element={<AdminHome />} />
      {/* pagina concurso */}
-    <Route path="/api/contests/:id_contest/:contest_url" element={<VoiceHome />} />
+    <Route path="/api/contests/:id_contest/:url_contest" element={<VoiceHome />} />
     {/* <Route path="/blog" element={<Blog />}>
       <Route path="" element={<Posts />} />
       <Route path=":postSlug" element={<Post />} />

@@ -11,7 +11,7 @@ function Concurso(props) {
       <td>{props.concurso.name}</td>
       <td>{props.concurso.date_start}</td>
       <td>{props.concurso.date_end}</td>
-      <td><img src={props.concurso.image}></img></td>
+      <td><a href={`api/contests/${props.concurso.id}/${props.concurso.url}`}>api/contests/{props.concurso.id}/{props.concurso.url}</a></td>
       </tr>
   )
 }

@@ -19,18 +19,19 @@ function AdminHome() {
     let navigate = useNavigate();
     const [click, setClick] = useState(1)
     
-    const handleClick = () => setClick(!click)
+    const handleClick = () => {setClick(!click); console.log(click)}
 
   return (
     
     <div>
         <p>Concursos</p>
-        <Button variant="primary" onClick={handleClick}> Agregar</Button>
-        {click? <ConcursoList/>: <ConcursoForm/>}
-
         <div>
          <button onClick={() => {logout();navigate('/')}  }>Logout</button>
         </div>
+        <Button variant="primary" onClick={handleClick}> Agregar</Button>
+        {click? <ConcursoList/>: <ConcursoForm clickback={setClick}/>}
+
+
     </div>
     
   )
