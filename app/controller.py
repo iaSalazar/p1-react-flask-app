@@ -10,7 +10,7 @@ import os
 from werkzeug.utils import secure_filename
 import logging
 from tasks import transform_audio_format
-
+import shutil
 
 guard = flask_praetorian.Praetorian()
 
@@ -248,6 +248,7 @@ def delete_contest(contest_id):
     """
     contest = Contest.query.filter(Contest.id == contest_id).first()
     db.session.delete(contest)
+    shutil.rmtree('./contests/{}'.format(contest_id), ignore_errors=True)
     db.session.commit()
     return contest_schema.dump(contest)
 
