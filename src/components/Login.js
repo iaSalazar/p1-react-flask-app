@@ -196,7 +196,7 @@ export default function Login() {
     </label>
     <label>
       Password
-      <input name="pay" onChange={handleSingPasswordChange} type="number"/>
+      <input name="password" onChange={handleSingPasswordChange} />
     </label>
     
         <button onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
