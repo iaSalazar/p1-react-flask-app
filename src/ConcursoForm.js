@@ -71,21 +71,28 @@ function ConcursoForm(props) {
     for (let [key, value] of formData) {
       console.log(`${key}: ${value}`)
     }
-  }
-
-  useEffect(() =>{
-    
     const requestOptions ={
-      headers: {
-        "Content-type": "multipart/forrm-data"
-      },
       method:'POST',
       body:formData
-
     }
-    authFetch("/api/contests/create",
+    authFetch("api/contests/create",
           requestOptions)
-  },[click])
+  }
+  
+
+  // useEffect(() =>{
+    
+  //   const requestOptions ={
+  //     headers: {
+  //       "Content-type": "multipart/forrm-data"
+  //     },
+  //     method:'POST',
+  //     body:formData
+
+  //   }
+  //   authFetch("/api/contests/create",
+  //         requestOptions)
+  // },[click])
 
   return (
     <div>C
