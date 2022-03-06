@@ -142,10 +142,7 @@ def add_event():
             user_id = user_id
 
         )
-    date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
-
-    print(date_start)
-    print(type(date_start))
+    
     db.session.add(new_contest)
     db.session.flush()
     db.session.commit()
@@ -192,23 +189,7 @@ def update_contest(contest_id):
     date_end_split = request.form['date_end'].split('-')
     uploaded_file = request.files['img_file']
     contest = Contest.query.get_or_404(contest_id)
-    #contest.name = request.form['name']
-#     filename = secure_filename('banner.jpg')
-    
-    # new_contest = Contest(
- 
-            
-    #         name = name,
-    #         image = 'not assigned',
-    #         url = request.form['name'],
-    #         date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
-    #         date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
-    #         pay = request.form['pay'],
-    #         script = request.form['script'],
-    #         tips = request.form['tips'],
-    #         user_id = user_id
-
-    #     )
+    filename = secure_filename('banner.jpg')
 
     if 'name' in request.form:
 
@@ -239,7 +220,12 @@ def update_contest(contest_id):
     if 'tips' in request.form:
 
         contest.tips = request.form['tips']
-    
+
+    upload_path = './contests/{}/contest_banner/'.format(contest_id)
+
+    db.session.commit()
+
+    uploaded_file.save(os.path.join(upload_path, filename))
     
     db.session.commit()
     return contest_schema.dump(contest)
@@ -255,6 +241,15 @@ def get_contest(contest_id, contest_url):
     #contest = Contest.query.get_or_404(contest_id)
     return contest_schema.dump(contest)
 
+@app.route("/api/contests/<int:contest_id>/delete", methods=["DELETE"])
+def delete_contest(contest_id):
+    """
+    Get specific contest
+    """
+    contest = Contest.query.filter(Contest.id == contest_id).first()
+    db.session.delete(contest)
+    db.session.commit()
+    return contest_schema.dump(contest)
 
 @app.route("/api/contests/user/<int:user_id>/list", methods=["GET"])
 def get_all_contest(user_id):

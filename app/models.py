@@ -69,7 +69,7 @@ class Voice(db.Model):
     file_path_org = db.Column(db.Text)
     transformed = db.Column(db.Boolean)
     date_uploaded = db.Column(db.DateTime)
-    contest_id = db.Column(Integer, db.ForeignKey('contest.id'))
+    contest_id = db.Column(Integer, db.ForeignKey('contest.id', ondelete ="CASCADE"))
     contest = db.relationship('Contest', back_populates='voices')
 ###############################################
 ###############################################3

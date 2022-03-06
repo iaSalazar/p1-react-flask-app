@@ -63,6 +63,7 @@ export default function Login() {
           login(token.access_token)
           //sessionStorage.setItem("token", token.access_token)
           console.log(token.access_token)
+          console.log(token.id)
         }
         else {
           console.log("Please type in correct username/password")
