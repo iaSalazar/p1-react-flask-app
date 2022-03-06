@@ -32,7 +32,7 @@ function Voice(props) {
     <td>{props.voice.trabsformed}</td>
     <td><Button variant="success" onClick={() => {handleSelected(props.selected(props.voice.file_path))}}> Play</Button></td>
  
-   </tr>
+    </tr>
   )
 }
 

@@ -41,6 +41,7 @@ function VoiceList(props) {
   return (
     <div>    
     <h1> {admin}</h1>
+    
         <Table striped bordered hover>
         <thead>
             <tr>

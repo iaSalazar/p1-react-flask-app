@@ -31,9 +31,13 @@ export default function Login() {
   }
 
   const [form, updateForm] = useState(singUpFormData)
-  const [username, setUsername] = useState('')
+  const [firstName, setFirst] = useState('')
+  const [secondName, setSecond] = useState('')
+  const [lastName, setLast] = useState('')
+  const [Email, setEmail] = useState('')
+  const [userMail, setUserMail] = useState('')
   const [password, setPassword] = useState('')
-  const [singUpUsername, setSingUsername] = useState('')
+  const [singUpUserMail, setSingUserMail] = useState('')
   const [singUpPassword, setSingPassword] = useState('')
   const token = sessionStorage.getItem("token")
   //const [useAuth, authFetch, login, logout] = useAuthProvider();
@@ -43,7 +47,7 @@ export default function Login() {
     e.preventDefault()
     console.log("You pressed login")
     let opts = {
-      'username': username,
+      'username': userMail,
       'password': password
     }
     console.log(opts)
@@ -70,8 +74,12 @@ export default function Login() {
     e.preventDefault()
     console.log("You pressed singUp")
     let opts = {
-      'username': singUpUsername,
-      'password': singUpPassword
+      'first_name':firstName,
+      'second_name': secondName,
+      'last_name': lastName,
+      'email': singUpUserMail,
+      'password': singUpPassword,
+      'roles':  'admin'
     }
     console.log(opts)
     fetch('/api/singUp', {
@@ -82,9 +90,7 @@ export default function Login() {
       body: JSON.stringify(opts)
     }).then(r => r.json())
       .then(token => {
-        
           console.log(token.access_token)
-        
         
       })
   }
@@ -99,27 +105,37 @@ export default function Login() {
     }
   }
 
-  const handleUsernameChange = (e) => {
+  const handleUserMailChange = (e) => {
     if (validator.isEmail(e.target.value)) {
       setEmailError('Valid Email :)')
-      setUsername(e.target.value)
+      setUserMail(e.target.value)
     } else {
       setEmailError('')
     }
-    setUsername(e.target.value)
+    setUserMail(e.target.value)
+  }
+
+  const handleFirstNameChange = (e) => {
+    setFirst(e.target.value)
+  }
+  const handleSecondNameChange = (e) => {
+    setSecond(e.target.value)
+  }
+  const handleLastNameChange = (e) => {
+    setLast(e.target.value)
   }
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
   }
-  const handleSingUsernameChange = (e) => {
+  const handleSingUserMailChange = (e) => {
     if (validator.isEmail(e.target.value)) {
       setEmailError('Valid Email :)')
-      setUsername(e.target.value)
+      setUserMail(e.target.value)
     } else {
       setEmailError('')
     }
-    setSingUsername(e.target.value)
+    setSingUserMail(e.target.value)
   }
 
   const handleSingPasswordChange = (e) => {
@@ -134,9 +150,9 @@ export default function Login() {
         <div>
           
           <input type="email" 
-            placeholder="Username" 
-            onChange={handleUsernameChange}
-            value={username} 
+            placeholder="User Email" 
+            onChange={handleUserMailChange}
+            value={userMail} 
           />
           
         <span style={{
@@ -159,27 +175,27 @@ export default function Login() {
       //:<button onClick={() => logout()}>Logout</button>}
       : <Navigate to ="/AdminHome"/>}
       
-      <form action="#">
+    <form action="#">
       <label>
       First Name
-      <input name="name" onChange={handleChange} />
+      <input name="name" onChange={handleFirstNameChange} />
     </label>
     <br />
     <label>
       Second Name
-      <input name="url" onChange={handleChange} />
+      <input name="url" onChange={handleSecondNameChange} />
     </label>
     <label>
       Last Name
-      <input name="last_name" onChange={handleChange} />
+      <input name="last_name" onChange={handleLastNameChange} />
     </label>
     <label>
       Email
-      <input name="email" onChange={handleChange}/>
+      <input name="email" onChange={handleSingUserMailChange}/>
     </label>
     <label>
       Password
-      <input name="pay" onChange={handleChange} type="number"/>
+      <input name="pay" onChange={handleSingPasswordChange} type="number"/>
     </label>
     
         <button onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
