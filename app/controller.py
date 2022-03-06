@@ -42,8 +42,10 @@ def login():
     #req = request.get_json(force=True)
     username = request.json.get("username", None)
     password = request.json.get("password", None)
-    user = guard.authenticate(username, password)
-    ret = {'access_token': guard.encode_jwt_token(user)}
+    usert = guard.authenticate(username, password)
+    user = User.query.filter_by(username=username).first()
+    ret = {'access_token': guard.encode_jwt_token(usert),
+    'id':user.id}
     return ret, 200
     """ username = request.json.get("username", None)
     password = request.json.get("password", None)
@@ -132,6 +134,7 @@ def add_event():
             image = 'not assigned',
             url = request.form['name'],
             date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
+            
             date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
             pay = request.form['pay'],
             script = request.form['script'],
@@ -139,8 +142,10 @@ def add_event():
             user_id = user_id
 
         )
-    
+    date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
 
+    print(date_start)
+    print(type(date_start))
     db.session.add(new_contest)
     db.session.flush()
     db.session.commit()
@@ -177,6 +182,67 @@ def update_event_url(id_contest):
     db.session.commit()
     return contest_schema.dump(contest)
 
+@app.route("/api/contests/<int:contest_id>/update", methods=["PUT"])
+@flask_praetorian.auth_required
+@flask_praetorian.roles_required("admin")
+def update_contest(contest_id):
+
+    date_start_split = request.form['date_start'].split('-')
+    print(date_start_split)
+    date_end_split = request.form['date_end'].split('-')
+    uploaded_file = request.files['img_file']
+    contest = Contest.query.get_or_404(contest_id)
+    #contest.name = request.form['name']
+#     filename = secure_filename('banner.jpg')
+    
+    # new_contest = Contest(
+ 
+            
+    #         name = name,
+    #         image = 'not assigned',
+    #         url = request.form['name'],
+    #         date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
+    #         date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
+    #         pay = request.form['pay'],
+    #         script = request.form['script'],
+    #         tips = request.form['tips'],
+    #         user_id = user_id
+
+    #     )
+
+    if 'name' in request.form:
+
+        contest.name = request.form['name']
+        print(request.form['name'])
+
+    if 'url' in request.form:
+
+        contest.url = request.form['url']
+
+    if 'date_start' in request.form:
+       
+        contest.date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2]))#request.json['date_start'],
+      
+
+    if 'date_end' in request.form:
+
+        contest.date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2]))#request.json['date_end'],
+
+    if 'pay' in request.form:
+
+        contest.pay = request.form['pay']
+
+    if 'script' in request.form:
+
+        contest.script = request.form['script']
+
+    if 'tips' in request.form:
+
+        contest.tips = request.form['tips']
+    
+    
+    db.session.commit()
+    return contest_schema.dump(contest)
 
 @app.route("/api/contests/<int:contest_id>/<contest_url>", methods=["GET"])
 def get_contest(contest_id, contest_url):
