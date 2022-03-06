@@ -2,6 +2,8 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import Table from 'react-bootstrap/Table'
 import Concurso from './Concurso'
+import { useParams } from 'react-router-dom'
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -14,7 +16,9 @@ import {
 function ConcursoList(props) {
     //let navigate = useNavigate();
     //const { id_user } = this.props.match.params.id_user
-    const apiLink = "/api/contests/user/1/list"
+    const {id_user} = useParams()
+    console.log(id_user)
+    const apiLink = `/api/contests/user/${id_user}/list`
     const adminLink = "admin"
 
     const [concursos, setConcursos] = useState([])

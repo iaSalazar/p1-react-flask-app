@@ -17,12 +17,12 @@ import {
 //     <VoiceHome />
 //   </React.StrictMode>,
 //   document.getElementById('root')
-// );
+// ); `/contests/user/${userId}`
  ReactDOM.render(<Router>
   
   <Routes>
     <Route path="/" element={<Login />} />
-    <Route path="/AdminHome" element={<AdminHome />} />
+    <Route path="/contests/user/:id_user" element={<AdminHome />} />
      {/* pagina concurso */}
     <Route path="/api/contests/:id_contest/:url_contest" element={<VoiceHome />} />
     {/* <Route path="/blog" element={<Blog />}>

@@ -23,7 +23,6 @@ export default function Login() {
 
   });
 
-  const navToLogin= `/contests/user/${userId}`
 
   const handleChange = (e) => {
     updateForm({
@@ -41,12 +40,15 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [singUpUserMail, setSingUserMail] = useState('')
   const [singUpPassword, setSingPassword] = useState('')
-  const token = sessionStorage.getItem("token")
-  const [userId, setUserId] = useState('')
+  const id = sessionStorage.getItem("id")
+  const [userId, setUserId] = useState()
   //const [useAuth, authFetch, login, logout] = useAuthProvider();
   const [logged] = useAuth();
+  const navToLogin= `/contests/user/${userId}`
+
 
   const onSubmitClick = (e) => {
+    
     e.preventDefault()
     console.log("You pressed login")
     let opts = {
@@ -68,6 +70,9 @@ export default function Login() {
           console.log(token.access_token)
           console.log(token.id)
           setUserId(token.id)
+          sessionStorage.setItem("id", token.id)
+          setTimeout(4000)
+          console.log(`the id: ${id} should have been saved`)
         }
         else {
           console.log("Please type in correct username/password")
@@ -133,6 +138,7 @@ export default function Login() {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
   }
+
   const handleSingUserMailChange = (e) => {
     if (validator.isEmail(e.target.value)) {
       setEmailError('Valid Email :)')
@@ -147,11 +153,13 @@ export default function Login() {
     setSingPassword(e.target.value)
   }
 
+  const idGet = async() => (sessionStorage.getItem("id"))
+
   return (
     <div>
       <h2>Login</h2>
 
-      {!logged? <form action="#">
+      {!logged? (<form action="#">
         <div>
           
           <input type="email" 
@@ -176,9 +184,9 @@ export default function Login() {
         <button onClick={onSubmitClick} type="submit">
           Login Now
         </button>
-      </form>
+      </form>)
       //:<button onClick={() => logout()}>Logout</button>}
-      : <Navigate to ="/contests/"/>}
+      : <Navigate to ={`/contests/user/${sessionStorage.getItem("id")}`}/>}
       
     <form action="#">
       <label>

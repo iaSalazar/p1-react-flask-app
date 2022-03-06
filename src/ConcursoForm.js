@@ -25,16 +25,20 @@ function ConcursoForm(props) {
   const [script, setScript] = useState()
   const [tips, setTips] = useState()
   
+  const formData = new FormData()
 
 
   const handleName = (e) => {
      setName(e.target.value.trim())
+     formData.append("name", e.target.value.trim())
   }
   const handleUrl = (e) => {
     setUrl(e.target.value.trim())
+    formData.append("url", e.target.value.trim())
   }
   const handleDateS = (e) => {
     setDateS(e.target.value.trim())
+    formData.append("date_start", e.target.value.trim())
   }
   const handleDateE = (e) => {
     setDateE(e.target.value.trim())
@@ -49,7 +53,6 @@ function ConcursoForm(props) {
     setTips(e.target.value.trim())
   }
 //the form data is all the collected form information and image banner
-  const formData = new FormData()
   formData.append("img_file", img_file)
   formData.append("name", name)
   formData.append("url", url)
@@ -63,7 +66,7 @@ function ConcursoForm(props) {
   const handleSubmit = (e) => {
     e.preventDefault()
     setClick(!click)
-    props.clickback(1)
+    //props.clickback(1)
     console.log([formData]);
     for (let [key, value] of formData) {
       console.log(`${key}: ${value}`)
@@ -73,10 +76,14 @@ function ConcursoForm(props) {
   useEffect(() =>{
     
     const requestOptions ={
+      headers: {
+        "Content-type": "multipart/forrm-data"
+      },
       method:'POST',
       body:formData
+
     }
-    authFetch("api/contests/create",
+    authFetch("/api/contests/create",
           requestOptions)
   },[click])
 
@@ -102,7 +109,7 @@ function ConcursoForm(props) {
     </label>
     <label>
       Premio
-      <input name="pay" onChange={handlePay} type="number"/>
+      <input name="pay" onChange={handlePay}/>
     </label>
     <label>
       Guión
@@ -116,7 +123,7 @@ function ConcursoForm(props) {
       Banner
       <input
             filename={img_file} 
-            onChange={e => setFile(e.target.files[0])} 
+            onChange={e => formData.append("img_file", e.target.files[0]) } 
             type="file" 
             name="img_file"
             accept="image/*"
