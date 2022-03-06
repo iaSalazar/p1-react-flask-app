@@ -23,6 +23,8 @@ export default function Login() {
 
   });
 
+  const navToLogin= `/contests/user/${userId}`
+
   const handleChange = (e) => {
     updateForm({
       ...form,
@@ -40,6 +42,7 @@ export default function Login() {
   const [singUpUserMail, setSingUserMail] = useState('')
   const [singUpPassword, setSingPassword] = useState('')
   const token = sessionStorage.getItem("token")
+  const [userId, setUserId] = useState('')
   //const [useAuth, authFetch, login, logout] = useAuthProvider();
   const [logged] = useAuth();
 
@@ -64,6 +67,7 @@ export default function Login() {
           //sessionStorage.setItem("token", token.access_token)
           console.log(token.access_token)
           console.log(token.id)
+          setUserId(token.id)
         }
         else {
           console.log("Please type in correct username/password")
@@ -174,7 +178,7 @@ export default function Login() {
         </button>
       </form>
       //:<button onClick={() => logout()}>Logout</button>}
-      : <Navigate to ="/AdminHome"/>}
+      : <Navigate to ="/contests/"/>}
       
     <form action="#">
       <label>
