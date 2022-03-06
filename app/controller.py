@@ -121,8 +121,8 @@ def add_event():
     print(request.form)
     print("######################################################################")
 
-    return jsonify(request.form.to_dict)
-    """
+    #return jsonify(request.form.to_dict)
+    
     date_start_split = request.form['date_start'].split('-')
     date_end_split = request.form['date_end'].split('-')
     print(type(date_start_split))
@@ -169,7 +169,7 @@ def add_event():
     uploaded_file.save(os.path.join(upload_path, filename))
 
     return contest_schema.dump(new_contest)
-"""
+
 @app.route("/api/contests/url_update/<id_contest>", methods=["PUT"])
 def update_event_url(id_contest):
     

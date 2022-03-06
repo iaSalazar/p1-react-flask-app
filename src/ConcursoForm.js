@@ -75,7 +75,7 @@ function ConcursoForm(props) {
       method:'POST',
       body:formData
     }
-    authFetch("api/contests/create",
+    authFetch("/api/contests/create",
           requestOptions)
   }
   
