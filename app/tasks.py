@@ -5,9 +5,10 @@ import sqlite3
 import ffmpeg
 from sqlalchemy import create_engine, MetaData
 import yagmail
+import psycopg2
 
 #app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
-app = Celery('tasks', broker='redis://redis:6379/0')
+app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
 # engine = create_engine("sqlite:///test.db", echo=True, future=True)
 # connection = engine.connect()
@@ -29,12 +30,21 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
         output.run()
 
         try:
-                sqliteConnection = sqlite3.connect('test.db')
-                cursor = sqliteConnection.cursor()
-                print("Database created and Successfully Connected to SQLite")
-                sqlite_select_Query = "UPDATE voice SET transformed=true WHERE id ={}".format(voice_id)
-                cursor.execute(sqlite_select_Query)
-                sqliteConnection.commit()
+                conn = psycopg2.connect(
+                        host="localhost",
+                        database="test",
+                        user="postgres",
+                        password="2006iaso")
+                cursor = conn.cursor()
+               
+                # sqliteConnection = sqlite3.connect('test.db')
+                # cursor = sqliteConnection.cursor()
+                
+                print("Database created and Successfully Connected")
+                query = "UPDATE voice SET transformed=true WHERE id ={}".format(voice_id)
+                cursor.execute(query)
+                #sqliteConnection.commit()
+                conn.commit()
                 # sqlite_select_Query = "Select * FROM voice where id={}".format(voice_id)
                 # cursor.execute(sqlite_select_Query)
                 # record = cursor.fetchall()
