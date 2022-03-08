@@ -11,6 +11,9 @@ from werkzeug.utils import secure_filename
 import logging
 from tasks import transform_audio_format
 import shutil
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 
 guard = flask_praetorian.Praetorian()
 
@@ -336,6 +339,13 @@ def upload_voice(contest_id,contest_url):
         db.session.add(new_voice)
 
         db.session.commit()
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        from_email = Email("cloud5202010@gmail.com")
+        to_email = To(email)
+        subject = 'Thanks for participating with your voice'
+        content = Content("text/plain", 'Hi {} your audio is already posted in the contes page {} !'.format(new_voice.name, new_voice.url))
+        mail = Mail(from_email, to_email, subject, content)
+        #response = sg.client.mail.send.post(request_body=mail.get())
     
     else:
         

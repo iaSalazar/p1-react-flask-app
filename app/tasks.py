@@ -6,6 +6,10 @@ import ffmpeg
 from sqlalchemy import create_engine, MetaData
 import yagmail
 import psycopg2
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
+
 
 #app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
@@ -51,9 +55,19 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
                 print('updated') 
                 cursor.close()
                 #initializing the server connection
-                yag = yagmail.SMTP(user='cloud5202010@gmail.com', password='12345ASDF')
-                #sending the email
-                yag.send(to= email, subject='Thanks for participating with your voice', contents='Hi {} your audio is already posted in the contes page {} !'.format(name, url))
+
+
+                # print(os.environ['SENDGRID_API_KEY'])
+                sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+                from_email = Email("cloud5202010@gmail.com")
+                to_email = To(email)
+                subject = 'Thanks for participating with your voice'
+                content = Content("text/plain", 'Hi {} your audio is already posted in the contes page {} !'.format(name, url))
+                mail = Mail(from_email, to_email, subject, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+                # print(response.status_code)
+                # print(response.body)
+                # print(response.headers)
                 print("Email sent successfully")
 
 
