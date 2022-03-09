@@ -2,37 +2,51 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import Table from 'react-bootstrap/Table'
 import Concurso from './Concurso'
+import { useParams } from 'react-router-dom'
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Navigate,
+    useNavigate,
+    Link
+  } from "react-router-dom";
 
 function ConcursoList(props) {
-
-    const apiLink = "no link"
+    //let navigate = useNavigate();
+    //const { id_user } = this.props.match.params.id_user
+    const {id_user} = useParams()
+    console.log(id_user)
+    const apiLink = `/api/contests/user/${id_user}/list`
     const adminLink = "admin"
 
-    const [concursos, setConcursos] = useState()
+    const [concursos, setConcursos] = useState([])
     const [click, setClick] = useState(0)
     const [selected, setSelected] = useState()
     const [admin, setAdmin] = useState()
-    const initialState={
-        name:"Concurso",
-        admin: "Admin"
-    }
+
     useEffect(() =>{
+        console.log("HOLAAAAAAAAAAAAAAAAAAAAa")
         fetch(apiLink).then((res) => res.json()).then( (apires) => {
             console.log(apires)
             setConcursos(apires)
+            console.log(concursos)
         })
-        fetch(adminLink).then((res) => res.json()).then( (apires) => {
-            console.log(apires)
-            setConcursos(apires)
-        })
-    })
+        // fetch(adminLink).then((res) => res.json()).then( (apires) => {
+        //     console.log(apires)
+        //     setAdmin(apires)
+        // })
+    },[])
 
+    
     const handleClick = () => setClick(!click)
+    //const navi = () => navigate("/Voice")
     const handleSelected = (concurso) => {  setSelected(concurso)
                                             setClick(!click)}
   return (
     <div>    
-    <h1> {initialState.admin} style={}</h1>
+    <h1> {admin}</h1>
 
         <Table striped bordered hover>
         <thead>

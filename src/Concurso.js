@@ -1,16 +1,18 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
 
+
 function Concurso(props) {
+  
   return (
-    <div>
-      <tr onClick ={() => {props.selected(props.concurso)}} />
+    
+      <tr onClick ={() => {props.selected(props.concurso);console.log('HOLAAAAACASDAF$#')}} >
       <td>{props.concurso.id}</td>
-      <td>{props.concurso.nombre}</td>
-      <td>{props.concurso.fechainicio}</td>
-      <td>{props.concurso.fechafin}</td>
-      <td>{props.concurso.url}</td>
-     </div>
+      <td>{props.concurso.name}</td>
+      <td>{props.concurso.date_start}</td>
+      <td>{props.concurso.date_end}</td>
+      <td><a href={`api/contests/${props.concurso.id}/${props.concurso.url}`}>api/contests/{props.concurso.id}/{props.concurso.url}</a></td>
+      </tr>
   )
 }
 

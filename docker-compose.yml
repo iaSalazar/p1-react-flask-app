@@ -1,0 +1,31 @@
+version: "3"
+services:
+  api:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: react-flask-app-api
+    volumes:
+      - "${PWD}/test:/app"
+    ports:
+    - "5000:5000"
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6380:6379'
+    command: redis-server && celery -A tasks worker -l info
+    volumes: 
+      - "${PWD}/cache:/data"
+   
+  # client:
+  #   restart: always
+  #   depends_on:
+  #   - api
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   image: react-flask-app-client
+  #   ports:
+  #     - "80:80"

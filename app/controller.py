@@ -10,7 +10,10 @@ import os
 from werkzeug.utils import secure_filename
 import logging
 from tasks import transform_audio_format
-
+import shutil
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 
 guard = flask_praetorian.Praetorian()
 
@@ -42,8 +45,10 @@ def login():
     #req = request.get_json(force=True)
     username = request.json.get("username", None)
     password = request.json.get("password", None)
-    user = guard.authenticate(username, password)
-    ret = {'access_token': guard.encode_jwt_token(user)}
+    usert = guard.authenticate(username, password)
+    user = User.query.filter_by(username=username).first()
+    ret = {'access_token': guard.encode_jwt_token(usert),
+    'id':user.id}
     return ret, 200
     """ username = request.json.get("username", None)
     password = request.json.get("password", None)
@@ -107,14 +112,20 @@ def get_user(user_id):
 
 
 @app.route("/api/contests/create", methods=["POST"])
-#@flask_praetorian.auth_required
+@flask_praetorian.auth_required
 @flask_praetorian.roles_required("admin")
 def add_event():
     """
     add new contest
     """
     
-    print(request.form['name'])
+    #print(request.form['name'])
+    print("######################################################################")
+    print(request.form)
+    print("######################################################################")
+
+    #return jsonify(request.form.to_dict)
+    
     date_start_split = request.form['date_start'].split('-')
     date_end_split = request.form['date_end'].split('-')
     print(type(date_start_split))
@@ -132,6 +143,7 @@ def add_event():
             image = 'not assigned',
             url = request.form['name'],
             date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2])),#request.json['date_start'],
+            
             date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2])),#request.json['date_end'],
             pay = request.form['pay'],
             script = request.form['script'],
@@ -140,7 +152,6 @@ def add_event():
 
         )
     
-
     db.session.add(new_contest)
     db.session.flush()
     db.session.commit()
@@ -177,6 +188,56 @@ def update_event_url(id_contest):
     db.session.commit()
     return contest_schema.dump(contest)
 
+@app.route("/api/contests/<int:contest_id>/update", methods=["PUT"])
+@flask_praetorian.auth_required
+@flask_praetorian.roles_required("admin")
+def update_contest(contest_id):
+
+    date_start_split = request.form['date_start'].split('-')
+    print(date_start_split)
+    date_end_split = request.form['date_end'].split('-')
+    uploaded_file = request.files['img_file']
+    contest = Contest.query.get_or_404(contest_id)
+    filename = secure_filename('banner.jpg')
+
+    if 'name' in request.form:
+
+        contest.name = request.form['name']
+        print(request.form['name'])
+
+    if 'url' in request.form:
+
+        contest.url = request.form['url']
+
+    if 'date_start' in request.form:
+       
+        contest.date_start = datetime.date(int(date_start_split[0]),int(date_start_split[1]),int(date_start_split[2]))#request.json['date_start'],
+      
+
+    if 'date_end' in request.form:
+
+        contest.date_end = datetime.date(int(date_end_split[0]),int(date_end_split[1]),int(date_end_split[2]))#request.json['date_end'],
+
+    if 'pay' in request.form:
+
+        contest.pay = request.form['pay']
+
+    if 'script' in request.form:
+
+        contest.script = request.form['script']
+
+    if 'tips' in request.form:
+
+        contest.tips = request.form['tips']
+
+    upload_path = './contests/{}/contest_banner/'.format(contest_id)
+
+    db.session.commit()
+
+    uploaded_file.save(os.path.join(upload_path, filename))
+    
+    db.session.commit()
+    return contest_schema.dump(contest)
 
 @app.route("/api/contests/<int:contest_id>/<contest_url>", methods=["GET"])
 def get_contest(contest_id, contest_url):
@@ -189,6 +250,16 @@ def get_contest(contest_id, contest_url):
     #contest = Contest.query.get_or_404(contest_id)
     return contest_schema.dump(contest)
 
+@app.route("/api/contests/<int:contest_id>/delete", methods=["DELETE"])
+def delete_contest(contest_id):
+    """
+    Get specific contest
+    """
+    contest = Contest.query.filter(Contest.id == contest_id).first()
+    db.session.delete(contest)
+    shutil.rmtree('./contests/{}'.format(contest_id), ignore_errors=True)
+    db.session.commit()
+    return contest_schema.dump(contest)
 
 @app.route("/api/contests/user/<int:user_id>/list", methods=["GET"])
 def get_all_contest(user_id):
@@ -233,22 +304,29 @@ def upload_voice(contest_id,contest_url):
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
     # contests/user-id/voices/voice.xxx
-    upload_path = './contests/{}/voices/'.format(contest_id)
-
-    file_path_original = upload_path+file_name_final
-    file_path_transformed = upload_path+file_name_transformed
+    upload_path_original = './contests/{}/voices/original/'.format(contest_id)
+    upload_path_transformed = './contests/{}/voices/transformed/'.format(contest_id)
+    file_path_original = upload_path_original+file_name_final
+    file_path_transformed = upload_path_transformed+file_name_transformed
     #in case the file is already mp3 format it will be considered as transformed
 
-    if not os.path.isdir(upload_path):
+    if not os.path.isdir(upload_path_original):
         #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
         os.umask(0)
-        os.makedirs(upload_path)
-        logging.info('Created directory {}'.format(upload_path))
+        os.makedirs(upload_path_original)
+        logging.info('Created directory {}'.format(upload_path_original))
 
-    uploaded_file.save(os.path.join(upload_path, file_name_final))
+    if not os.path.isdir(upload_path_transformed):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(upload_path_transformed)
+        logging.info('Created directory {}'.format(upload_path_transformed))
+
+    
 
     if file_format == 'mp3':
-        file_path_transformed = file_path_original
+        uploaded_file.save(os.path.join(upload_path_transformed, file_name_final))
+        #file_path_transformed = file_path_original
         transformed = True
         new_voice = Voice(
  
@@ -258,7 +336,7 @@ def upload_voice(contest_id,contest_url):
             email = request.form['email'],
             observations = request.form['observations'],
             file_path = file_path_transformed,
-            file_path_org = file_path_original,
+            file_path_org = file_path_transformed,
             transformed = transformed,
             date_uploaded = datetime.datetime.now(),
             contest_id = contest_id
@@ -268,9 +346,16 @@ def upload_voice(contest_id,contest_url):
         db.session.add(new_voice)
 
         db.session.commit()
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        from_email = Email("cloud5202010@gmail.com")
+        to_email = To(email)
+        subject = 'Thanks for participating with your voice'
+        content = Content("text/plain", 'Hi {} your audio is already posted in the contes page {} !'.format(new_voice.name, new_voice.url))
+        mail = Mail(from_email, to_email, subject, content)
+        #response = sg.client.mail.send.post(request_body=mail.get())
     
     else:
-        
+        uploaded_file.save(os.path.join(upload_path_original, file_name_final))
         new_voice = Voice(
  
             first_name = request.form['first_name'],
@@ -339,8 +424,6 @@ def get_play_voice(voice_id,contest_id):
 
 
 @app.route("/api/contests/<int:contest_id>/voices", methods=["GET"])
-@flask_praetorian.auth_required
-@flask_praetorian.roles_required("admin")
 def get_all_voices(contest_id):
     """
     Get all voices metadata
