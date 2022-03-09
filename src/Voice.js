@@ -29,8 +29,8 @@ function Voice(props) {
     <td>{props.voice.id}</td>
     <td>{props.voice.first_name + " " + props.voice.last_name}</td>
     <td>{props.voice.email}</td>
-    <td>{props.voice.trabsformed}</td>
-    <td><Button variant="success" onClick={() => {handleSelected(props.selected(props.voice.file_path))}}> Play</Button></td>
+    <td>{props.voice.transformed ? "true": "false"}</td>
+    <td><Button variant="success" onClick={() => {handleSelected(props.selected(props.voice))}}> Play</Button></td>
  
     </tr>
   )

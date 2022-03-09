@@ -18,13 +18,14 @@ import {
 //   </React.StrictMode>,
 //   document.getElementById('root')
 // ); `/contests/user/${userId}`
+//<Route path="/contests/user/:id_user" element={<AdminHome />} />
  ReactDOM.render(<Router>
   
   <Routes>
     <Route path="/" element={<Login />} />
-    <Route path="/contests/user/:id_user" element={<AdminHome />} />
+    <Route path="/contests/user/" element={<AdminHome />} />
      {/* pagina concurso */}
-    <Route path="/api/contests/:id_contest/:url_contest" element={<VoiceHome />} />
+    <Route path="/contests/:id_contest/:url_contest" element={<VoiceHome/>} />
     {/* <Route path="/blog" element={<Blog />}>
       <Route path="" element={<Posts />} />
       <Route path=":postSlug" element={<Post />} />
