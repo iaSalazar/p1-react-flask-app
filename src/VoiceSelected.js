@@ -40,7 +40,7 @@ function VoiceSelected(props) {
 }
   
 const downloadOriginal = () => {
-  fetch(orgLink)
+  authFetch(orgLink)
       .then(response => {
           response.blob().then(blob => {
               let url = window.URL.createObjectURL(blob);
