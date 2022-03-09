@@ -304,22 +304,29 @@ def upload_voice(contest_id,contest_url):
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
     # contests/user-id/voices/voice.xxx
-    upload_path = './contests/{}/voices/'.format(contest_id)
-
-    file_path_original = upload_path+file_name_final
-    file_path_transformed = upload_path+file_name_transformed
+    upload_path_original = './contests/{}/voices/original/'.format(contest_id)
+    upload_path_transformed = './contests/{}/voices/transformed/'.format(contest_id)
+    file_path_original = upload_path_original+file_name_final
+    file_path_transformed = upload_path_transformed+file_name_transformed
     #in case the file is already mp3 format it will be considered as transformed
 
-    if not os.path.isdir(upload_path):
+    if not os.path.isdir(upload_path_original):
         #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
         os.umask(0)
-        os.makedirs(upload_path)
-        logging.info('Created directory {}'.format(upload_path))
+        os.makedirs(upload_path_original)
+        logging.info('Created directory {}'.format(upload_path_original))
 
-    uploaded_file.save(os.path.join(upload_path, file_name_final))
+    if not os.path.isdir(upload_path_transformed):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(upload_path_transformed)
+        logging.info('Created directory {}'.format(upload_path_transformed))
+
+    
 
     if file_format == 'mp3':
-        file_path_transformed = file_path_original
+        uploaded_file.save(os.path.join(upload_path_transformed, file_name_final))
+        #file_path_transformed = file_path_original
         transformed = True
         new_voice = Voice(
  
@@ -329,7 +336,7 @@ def upload_voice(contest_id,contest_url):
             email = request.form['email'],
             observations = request.form['observations'],
             file_path = file_path_transformed,
-            file_path_org = file_path_original,
+            file_path_org = file_path_transformed,
             transformed = transformed,
             date_uploaded = datetime.datetime.now(),
             contest_id = contest_id
@@ -348,7 +355,7 @@ def upload_voice(contest_id,contest_url):
         #response = sg.client.mail.send.post(request_body=mail.get())
     
     else:
-        
+        uploaded_file.save(os.path.join(upload_path_original, file_name_final))
         new_voice = Voice(
  
             first_name = request.form['first_name'],
