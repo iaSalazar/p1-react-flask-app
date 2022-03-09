@@ -3,6 +3,7 @@ import Voice from './Voice'
 import {useState, useEffect} from 'react'
 import Table from 'react-bootstrap/Table'
 import { useParams } from 'react-router-dom'
+import VoiceSelected from './VoiceSelected'
 
 
 function VoiceList(props) {
@@ -38,16 +39,18 @@ function VoiceList(props) {
         name:"Concurso",
         admin: "Admin"
     }
+    //{click ? <VoiceSelected key={1} voice={selected}/>:""}
   return (
     <div>    
     <h1> {admin}</h1>
-    
+        {click ? <VoiceSelected key={1} voice={selected}/>:""}
         <Table striped bordered hover>
         <thead>
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
                 <th>email</th>
+                <th>Transformed</th>
                 <th>Audio</th>
             </tr>
         </thead>
@@ -55,7 +58,7 @@ function VoiceList(props) {
             {voices?.reverse().map((e,i) =>(<Voice voice={e} key={i} selected={handleSelected} remove={handleClick} id_contest={id_contest} url_contest={url_contest}/>))}
         </tbody>
         </Table>
-        {click ? "":""}
+        
     </div>
   )
 }
