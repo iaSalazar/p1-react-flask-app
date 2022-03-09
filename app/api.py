@@ -5,7 +5,7 @@ from flask_marshmallow import Marshmallow
 import flask_cors 
 
 
-app = Flask(__name__)#, static_folder="../build", static_url_path="/")
+app = Flask(__name__, static_folder="../build", static_url_path="/")
 
 
 app.secret_key = "super-secret"
