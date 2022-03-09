@@ -16,8 +16,9 @@ import {
 function ConcursoList(props) {
     //let navigate = useNavigate();
     //const { id_user } = this.props.match.params.id_user
-    const {id_user} = useParams()
-    console.log(id_user)
+    //const {id_user} = useParams()
+    //console.log(id_user)
+    const id_user = sessionStorage.getItem("id")
     const apiLink = `/api/contests/user/${id_user}/list`
     const adminLink = "admin"
 
@@ -25,10 +26,12 @@ function ConcursoList(props) {
     const [click, setClick] = useState(0)
     const [selected, setSelected] = useState()
     const [admin, setAdmin] = useState()
+    const [refresh, setrefresh] = useState()
 
     useEffect(() =>{
         console.log("HOLAAAAAAAAAAAAAAAAAAAAa")
-        fetch(apiLink).then((res) => res.json()).then( (apires) => {
+        setTimeout(12000)
+        fetch(`/api/contests/user/${id_user}/list`).then((res) => res.json()).then( (apires) => {
             console.log(apires)
             setConcursos(apires)
             console.log(concursos)
@@ -37,7 +40,7 @@ function ConcursoList(props) {
         //     console.log(apires)
         //     setAdmin(apires)
         // })
-    },[])
+    },[click])
 
     
     const handleClick = () => setClick(!click)
@@ -59,7 +62,7 @@ function ConcursoList(props) {
             </tr>
         </thead>
         <tbody>
-            {concursos?.map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} />))}
+            {concursos?.reverse().map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} />))}
         </tbody>
         </Table>
         {click ? "":""}

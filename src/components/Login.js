@@ -185,8 +185,9 @@ export default function Login() {
           Login Now
         </button>
       </form>)
-      //:<button onClick={() => logout()}>Logout</button>}
-      : <Navigate to ={`/contests/user/${sessionStorage.getItem("id")}`}/>}
+      //:<button onClick={() => logout()}>Logout</button>
+      //
+      : <Navigate to ={`/contests/user`}/>}
       
     <form action="#">
       <label>

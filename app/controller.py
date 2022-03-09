@@ -299,7 +299,9 @@ def upload_voice(contest_id,contest_url):
     
     file_format = uploaded_file.filename.rsplit('.',1)[1]
     file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
-    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
+    #file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
+    file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
+
     
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
@@ -397,7 +399,7 @@ def get_voice_org(voice_id,contest_id):
     return send_from_directory(file_path[0],file_path[1])
 
 @app.route("/api/contests/<int:contest_id>/trns/<int:voice_id>", methods=["GET"])
-@flask_praetorian.auth_required
+#@flask_praetorian.auth_required
 def get_voice(voice_id,contest_id):
     """
     get transformed (mp3) voice file for downlaod or streaming

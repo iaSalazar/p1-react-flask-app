@@ -11,7 +11,7 @@ function VoiceList(props) {
   const apiLink = `/api/contests/${id_contest}/voices`
   // const adminLink = "admin"
   //api/contests/${id_contest}
-  
+  //{id: 1, first_name: "empty", last_name: "list", email: "no@mail.com", transformed: "./"}
   const [voices, setVoices] = useState([])
   const [click, setClick] = useState(0)
   const [admin, setAdmin] = useState()
@@ -52,7 +52,7 @@ function VoiceList(props) {
             </tr>
         </thead>
         <tbody>
-            {voices?.map((e,i) =>(<Voice voice={e} key={i} selected={handleSelected} remove={handleClick} id_contest={id_contest} url_contest={url_contest}/>))}
+            {voices?.reverse().map((e,i) =>(<Voice voice={e} key={i} selected={handleSelected} remove={handleClick} id_contest={id_contest} url_contest={url_contest}/>))}
         </tbody>
         </Table>
         {click ? "":""}

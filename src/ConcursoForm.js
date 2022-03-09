@@ -66,7 +66,7 @@ function ConcursoForm(props) {
   const handleSubmit = (e) => {
     e.preventDefault()
     setClick(!click)
-    //props.clickback(1)
+    props.clickback(1)
     console.log([formData]);
     for (let [key, value] of formData) {
       console.log(`${key}: ${value}`)
@@ -95,7 +95,7 @@ function ConcursoForm(props) {
   // },[click])
 
   return (
-    <div>C
+    <div>
     
     <label>
       Nombre Concurso
