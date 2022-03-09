@@ -33,7 +33,7 @@ function ConcursoList(props) {
         setTimeout(12000)
         fetch(`/api/contests/user/${id_user}/list`).then((res) => res.json()).then( (apires) => {
             console.log(apires)
-            setConcursos(apires)
+            setConcursos(apires.reverse())
             console.log(concursos)
         })
         // fetch(adminLink).then((res) => res.json()).then( (apires) => {
@@ -62,7 +62,7 @@ function ConcursoList(props) {
             </tr>
         </thead>
         <tbody>
-            {concursos?.reverse().map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} />))}
+            {concursos?.map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} />))}
         </tbody>
         </Table>
         {click ? "":""}
