@@ -21,7 +21,7 @@ function VoiceHome(props) {
     <div>
         <p>Concurso</p>
         <div >
-            <Button variant="primary" onClick={handleClick}> Agregar</Button>
+            <Button variant="primary" onClick={handleClick}> Agregar</Button> <span>    </span>
             <Button variant="primary" onClick={handleClick} > Info</Button>
         </div>
         {console.log(window.location.href)}
