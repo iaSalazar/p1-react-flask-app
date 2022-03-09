@@ -34,11 +34,15 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
         output.run()
 
         try:
-                conn = psycopg2.connect(
-                        host="localhost",
-                        database="test",
-                        user="postgres",
-                        password="2006iaso")
+                host = os.environ.get('RDS_AWS_HOST')
+                password= os.environ.get('RDS_AWS_PSW')
+                database= os.environ.get('RDS_AWS_DBN')
+                user = os.environ.get('RDS_AWS_USR')
+                print(user)
+                #conn = psycopg2.connect(host="localhost", database="test", user="postgres",password="2006iaso")
+                conn = psycopg2.connect(host=host, database=database, user=user,password=password)
+
+
                 cursor = conn.cursor()
                
                 # sqliteConnection = sqlite3.connect('test.db')
