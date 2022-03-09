@@ -5,14 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import VoiceHome from './VoiceHome'
 
-<<<<<<< HEAD
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-    
-  </React.StrictMode>,
-  document.getElementById('root')
-=======
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -42,7 +34,6 @@ import {
 </Router>,
 
 document.getElementById("root")
->>>>>>> 32c87d3cec89e7595b1cefc705acb125c4e3b414
 );
 
 // If you want to start measuring performance in your app, pass a function
