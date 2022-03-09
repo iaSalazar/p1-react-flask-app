@@ -299,8 +299,8 @@ def upload_voice(contest_id,contest_url):
     
     file_format = uploaded_file.filename.rsplit('.',1)[1]
     file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
-    #file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
-    file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
+    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
+    #file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
 
     
     transformed = False
