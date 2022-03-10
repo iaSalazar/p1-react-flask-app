@@ -22,7 +22,7 @@ function VoiceList(props) {
       console.log("aa")
       fetch(apiLink).then((res) => res.json()).then( (apires) => {
           console.log(apires)
-          setVoices(apires)
+          setVoices(apires.reverse())
           
       })
     //   fetch(adminLink).then((res) => res.json()).then( (apires) => {
@@ -55,7 +55,7 @@ function VoiceList(props) {
             </tr>
         </thead>
         <tbody>
-            {voices?.reverse().map((e,i) =>(<Voice voice={e} key={i} selected={handleSelected} remove={handleClick} id_contest={id_contest} url_contest={url_contest}/>))}
+            {voices?.map((e,i) =>(<Voice voice={e} key={i} selected={handleSelected} remove={handleClick} id_contest={id_contest} url_contest={url_contest}/>))}
         </tbody>
         </Table>
         
