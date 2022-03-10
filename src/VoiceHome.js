@@ -35,6 +35,9 @@ function VoiceHome(props) {
         <div >
             <Button variant="primary" onClick={handleClick}> Agregar</Button> <span>    </span>
             <Button variant="primary" onClick={handleClick} > Info</Button>
+            <p> </p>
+            <p>Los usuarios pueden ver en el home las voces ya convertidas que han sido
+subidas en la página de cada concurso y asi mismo pueden reproducir las voces</p>
         </div>
         {console.log(window.location.href)}
         {click? <VoiceList id={id_contest}/>: <VoiceForm id={id_contest}/>}

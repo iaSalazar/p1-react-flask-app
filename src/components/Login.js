@@ -215,7 +215,10 @@ export default function Login() {
         <button onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
           singUp
         </button>
-        </form>
+     </form>
+     <p>El administrador puede visitar el home y pueda crear una nueva cuenta.</p>
+  
     </div>
+    
   )
 }
