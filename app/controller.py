@@ -346,7 +346,7 @@ def upload_voice(contest_id,contest_url):
 
         )
         db.session.add(new_voice)
-
+        db.session.flush()
         db.session.commit()
         sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
         from_email = Email("cloud5202010@gmail.com")
