@@ -327,7 +327,7 @@ def upload_voice(contest_id,contest_url):
     
 
     if file_format == 'mp3':
-        uploaded_file.save(os.path.join(upload_path_transformed, file_name_final))
+        uploaded_file.save(os.path.join(upload_path_transformed, file_name_transformed))
         #file_path_transformed = file_path_original
         transformed = True
         new_voice = Voice(
