@@ -1,8 +1,21 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
+import Button from 'react-bootstrap/Button'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Navigate,
+  Link
+} from "react-router-dom";
+
 
 
 function Concurso(props) {
+
+  const [click, setClick] = useState(1)
+
+  const handleClick = () => setClick(!click)
   
   return (
     
@@ -11,7 +24,7 @@ function Concurso(props) {
       <td>{props.concurso.name}</td>
       <td>{props.concurso.date_start}</td>
       <td>{props.concurso.date_end}</td>
-      <td><a href={`/contests/${props.concurso.id}/${props.concurso.url}`}>contests/{props.concurso.id}/{props.concurso.url}</a></td>
+      <td>{click ? <Button variant="success" onClick={handleClick}> Go !</Button>: <Navigate to ={`/contests/${props.concurso.id}/${props.concurso.url}`}/>}</td>
       </tr>
   )
 }
