@@ -28,6 +28,8 @@ function ConcursoList(props) {
     const [admin, setAdmin] = useState()
     const [refresh, setrefresh] = useState()
 
+   
+
     useEffect(() =>{
         console.log("HOLAAAAAAAAAAAAAAAAAAAAa")
         setTimeout(12000)
@@ -63,7 +65,7 @@ function ConcursoList(props) {
             </tr>
         </thead>
         <tbody>
-            {concursos?.map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} />))}
+            {concursos?.map((e,i) =>(<Concurso concurso={e} id={i} selected={handleSelected} remove={handleClick} clickPut={props.clickPut} setCurrent={props.setCurrent} />))}
         </tbody>
         </Table>
         {click ? "":""}

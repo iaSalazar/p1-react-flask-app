@@ -27,6 +27,12 @@ function Concurso(props) {
     authFetch(deLink,
           requestOptions)
   }
+
+  const handlePut = () =>{
+    props.setCurrent(props.concurso)
+    props.clickPut()
+
+  }
   
   return (
     
@@ -35,7 +41,7 @@ function Concurso(props) {
       <td>{props.concurso.name}</td>
       <td>{props.concurso.date_start}</td>
       <td>{props.concurso.date_end}</td>
-      <td><Button variant="danger" onClick={handleDelete}>Delete!!</Button></td>
+      <td><Button variant="primary" onClick={handlePut}>Edit :D</Button><span> </span> <Button variant="danger" onClick={handleDelete}>Delete!!</Button></td>
       <td>{click ? <Button variant="success" onClick={handleClick}> Go !</Button>: <Navigate to ={`/contests/${props.concurso.id}/${props.concurso.url}`}/>}</td>
       </tr>
   )
