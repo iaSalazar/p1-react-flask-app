@@ -31,7 +31,7 @@ function VoiceHome(props) {
     
     <div>
         <p>Concurso {url_contest}</p>
-        <img src={banner} height="200"></img>
+        <img src={banner} height="200" ></img>
         <div >
             <Button variant="primary" onClick={handleClick}> Agregar</Button> <span>    </span>
             <Button variant="primary" onClick={handleClick} > Info</Button>
