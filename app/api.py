@@ -13,10 +13,10 @@ app.secret_key = "super-secret"
 
 app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
 app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2006iaso@localhost:5432/test'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://<user>:<password>@<AWS_RDS_HOST>:<port>/<db_name>'
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RDS_AWS')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RDS_AWS')
 
 app.app_context()
 
