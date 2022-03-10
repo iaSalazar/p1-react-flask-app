@@ -293,7 +293,7 @@ def upload_voice(contest_id,contest_url):
     add new voice
     """
     
-    
+    full_contest_url='http://44.196.116.204/contests/'+str(contest_id)+'/'+contest_url
     file_name = str(uuid.uuid4())
     uploaded_file = request.files['audio_file']
     
@@ -350,10 +350,11 @@ def upload_voice(contest_id,contest_url):
         db.session.commit()
         sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
         from_email = Email("cloud5202010@gmail.com")
-        to_email = To(email)
+        to_email = To(new_voice.email)
         subject = 'Thanks for participating with your voice'
-        content = Content("text/plain", 'Hi {} your audio is already posted in the contes page {} !'.format(new_voice.name, new_voice.url))
+        content = Content("text/plain", 'Hi {} your audio is already posted in the contes page {} !'.format(new_voice.first_name+' '+new_voice.last_name, full_contest_url))
         mail = Mail(from_email, to_email, subject, content)
+        response = sg.client.mail.send.post(request_body=mail.get())
         #response = sg.client.mail.send.post(request_body=mail.get())
     
     else:
@@ -377,7 +378,7 @@ def upload_voice(contest_id,contest_url):
 
         db.session.flush()
         transform_audio_format.delay(file_path_original,file_path_transformed, new_voice.id, new_voice.email,\
-             new_voice.first_name+' '+new_voice.last_name,'/{}/{}'.format(contest_id,contest_url))
+             new_voice.first_name+' '+new_voice.last_name,full_contest_url)
         db.session.commit()
 
     
