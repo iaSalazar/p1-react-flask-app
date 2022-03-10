@@ -25,10 +25,14 @@ function AdminHome() {
     
     <div>
         <p>Concursos</p>
+        <p> </p>
+        <p>El administrador puede gestionar los concursos (CRUD de concursos)</p>
         <div>
-         <button onClick={() => {logout();navigate('/')}  }>Logout</button>
-        </div>
+        <Button variant="danger" onClick={() => {logout();navigate('/')}  }>Logout</Button>
+        <span>   </span>
         <Button variant="primary" onClick={handleClick}> Agregar</Button>
+        </div>
+        
         {click? <ConcursoList/>: <ConcursoForm clickback={setClick}/>}
 
 

@@ -96,7 +96,11 @@ function ConcursoForm(props) {
 
   return (
     <div>
-    
+    <p>Los usuarios pueden subir una voz a un concurso completando el formulario</p>
+
+<p>La voz es procesada, el estado de la voz cambia en la tabla principal. El usuario recibe un email donde se le informa que la
+voz ya ha sido publicada en la página pública del concurso.</p>
+
     <label>
       Nombre Concurso
       <input name="name" onChange={handleName} />

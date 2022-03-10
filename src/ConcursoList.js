@@ -58,6 +58,7 @@ function ConcursoList(props) {
                 <th>Nombre</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
+                <th>Options</th>
                 <th>URL</th>
             </tr>
         </thead>

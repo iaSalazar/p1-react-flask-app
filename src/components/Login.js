@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import validator from 'validator'
 import {login, authFetch, useAuth, logout} from "../auth"
+import Button from 'react-bootstrap/Button'
+
 
 export default function Login() {
 
@@ -181,9 +183,11 @@ export default function Login() {
             value={password}
           />
         </div>
-        <button onClick={onSubmitClick} type="submit">
+        
+        <Button variant="primary" onClick={onSubmitClick} type="submit">
           Login Now
-        </button>
+        </Button>
+        <p> </p>
       </form>)
       //:<button onClick={() => logout()}>Logout</button>
       //
@@ -191,31 +195,51 @@ export default function Login() {
       
     <form action="#">
       <label>
-      First Name
+      First Name <span>  </span>  
       <input name="name" onChange={handleFirstNameChange} />
+    </label>
+    
+    <label>
+    <span>  Second Name </span>
+      <input name="url" onChange={handleSecondNameChange} />
     </label>
     <br />
     <label>
-      Second Name
-      <input name="url" onChange={handleSecondNameChange} />
-    </label>
-    <label>
-      Last Name
+      Last Name <span>  </span>
       <input name="last_name" onChange={handleLastNameChange} />
     </label>
+    
     <label>
-      Email
+      Email <span>  </span>
       <input name="email" onChange={handleSingUserMailChange}/>
     </label>
+    <br />
     <label>
-      Password
+      Password <span>  </span>
       <input name="password" onChange={handleSingPasswordChange} />
     </label>
     
-        <button onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
+        <Button variant="primary" onClick={onSubmitSingUpClick} type="submit" disabled={emailError==='Enter valid Email!'}>
           singUp
-        </button>
-        </form>
+        </Button>
+     </form>
+     <p>El administrador puede visitar el home y pueda crear una nueva cuenta.</p>
+     <p></p>
+     <p></p>
+
+     <h1>SuperVoices</h1>
+<p> Somos SuperVoices un software dedicado a la realizacion de concursos para encontrar las mejores voces para sus
+anuncios publicitarios (videos en YouTube, comerciales en TV y radio, etc.). Nuestros principale clientes son la grandes empresas que se 
+en cuentran busca de esa voz diferenciadora para realizar la grabacion de sus archivos multimedia para impulsar empresa.
+El modelo general de funcionamiento de nuestra plataforma se basa en que un administrador de una empresa
+entra al portal y crea una cuenta. Una vez la cuenta ha sido creada el
+administrador puede proceder a configurar los concursos de voces que esa empresa tiene
+disponibles en los cuales participarán locutores profesionales o personas interesadas en audicionar en el concurso. Por cada concurso publicado el
+sistema genera una URL única que el administrador puede enviar a su listado de locutores profesionales a través de email, para que
+estos puedan entrar y subir sus propuestas de voces para cada concurso. Las voces serán revisadas
+por el equipo de marketing de la empresa y la mejor voz será contratada por la empresa.</p>
+  
     </div>
+    
   )
 }
