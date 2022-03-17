@@ -9,7 +9,9 @@ import psycopg2
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
-
+import uuid
+import csv
+import time
 
 #app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
@@ -20,7 +22,8 @@ app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
 
 @app.task
 def transform_audio_format(url_original, url_destiny, voice_id, email, name, url):
-
+        time_start = time.time()
+        file_name =str(uuid.uuid4())
         url_new_file_format = url_destiny.rsplit('.',1)[0]+'.mp3'
        
         print(url_original)
@@ -32,6 +35,7 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
         output = ffmpeg.output(input,url_new_file_format)
 
         output.run()
+        total_time= time.time() - time_start
 
         try:
                 host = os.environ.get('RDS_AWS_HOST')
@@ -73,6 +77,16 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
                 # print(response.body)
                 # print(response.headers)
                 print("Email sent successfully")
+                if not os.path.isdir('./tiempos'):
+                #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+                        os.umask(0)
+                        os.makedirs('./tiempos')
+                row = [voice_id, total_time]
+                f = open('tiempos/{}.csv'.format(file_name), 'a')
+                writer = csv.writer(f)
+                writer.writerow(row)
+                f.close() 
+                print('tiempo almacenado')
 
 
                  
