@@ -69,8 +69,11 @@ const downloadOriginal = () => {
             <td>{props.voice.id}</td>
             <td>{props.voice.first_name + " " + props.voice.last_name}</td>
             <td>{props.voice.email}</td>
-            <td>{logged ? <div><Button variant="primary" onClick={downloadTransformed}> mp3 format</Button> <span>    </span>
-                <Button variant="primary" onClick={downloadOriginal}> Original</Button></div> : <div><Button variant="primary" onClick={downloadTransformed}> mp3 format</Button></div>}
+            <td>{logged ?  <div>
+                <Button variant="primary" onClick={downloadOriginal}> Original</Button></div> 
+                : ""}
+                 <span>    </span>
+              <div><Button variant="primary" onClick={downloadTransformed}> mp3 format</Button></div>
             </td>
             <td><audio id="audio" controls preload="auto">
                 <source src={audio} type="audio/mp3" />
