@@ -330,6 +330,7 @@ def upload_voice(contest_id,contest_url):
         uploaded_file.save(os.path.join(upload_path_transformed, file_name_transformed))
         #file_path_transformed = file_path_original
         transformed = True
+        date_uploaded = datetime.datetime.now()
         new_voice = Voice(
  
             first_name = request.form['first_name'],
@@ -340,7 +341,8 @@ def upload_voice(contest_id,contest_url):
             file_path = file_path_transformed,
             file_path_org = file_path_transformed,
             transformed = transformed,
-            date_uploaded = datetime.datetime.now(),
+            date_uploaded = date_uploaded,
+            queue_time = 0,
             contest_id = contest_id
 
 
@@ -359,6 +361,7 @@ def upload_voice(contest_id,contest_url):
     
     else:
         uploaded_file.save(os.path.join(upload_path_original, file_name_final))
+        date_uploaded = datetime.datetime.now()
         new_voice = Voice(
  
             first_name = request.form['first_name'],
@@ -369,7 +372,7 @@ def upload_voice(contest_id,contest_url):
             file_path = file_path_transformed,
             file_path_org = file_path_original,
             transformed = transformed,
-            date_uploaded = datetime.datetime.now(),
+            date_uploaded = date_uploaded,
             contest_id = contest_id
 
 
@@ -378,7 +381,7 @@ def upload_voice(contest_id,contest_url):
 
         db.session.flush()
         transform_audio_format.delay(file_path_original,file_path_transformed, new_voice.id, new_voice.email,\
-             new_voice.first_name+' '+new_voice.last_name,full_contest_url)
+             new_voice.first_name+' '+new_voice.last_name,full_contest_url, date_uploaded)
         db.session.commit()
 
     

@@ -69,8 +69,10 @@ class Voice(db.Model):
     file_path_org = db.Column(db.Text)
     transformed = db.Column(db.Boolean)
     date_uploaded = db.Column(db.DateTime)
+    queue_time= db.Column(db.Float)
     contest_id = db.Column(Integer, db.ForeignKey('contest.id', ondelete ="CASCADE"))
     contest = db.relationship('Contest', back_populates='voices')
+    
 ###############################################
 ###############################################3
 #SCHEMAS 

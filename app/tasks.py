@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import zipfile
 from celery import Celery
 import sqlite3
@@ -21,11 +21,13 @@ app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
 # metadata = MetaData()
 
 @app.task
-def transform_audio_format(url_original, url_destiny, voice_id, email, name, url):
-        time_start = time.time()
-        file_name =str(uuid.uuid4())
+def transform_audio_format(url_original, url_destiny, voice_id, email, name, url, date_uploaded):
+        
+        time_queue = (datetime.datetime.now() - datetime.datetime.strptime(date_uploaded.replace('T',' '), '%Y-%m-%d %H:%M:%S.%f') ).total_seconds()
+
         url_new_file_format = url_destiny.rsplit('.',1)[0]+'.mp3'
-       
+        print(str(datetime.datetime.now)+'||||||'+date_uploaded)
+        print(time_queue)
         print(url_original)
         print(url_destiny)
         print(url_new_file_format)
@@ -35,8 +37,8 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
         output = ffmpeg.output(input,url_new_file_format)
 
         output.run()
-        total_time= time.time() - time_start
-
+        
+        
         try:
                 host = os.environ.get('RDS_AWS_HOST')
                 password= os.environ.get('RDS_AWS_PSW')
@@ -54,6 +56,8 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
                 
                 print("Database created and Successfully Connected")
                 query = "UPDATE voice SET transformed=true WHERE id ={}".format(voice_id)
+                cursor.execute(query)
+                query = "UPDATE voice SET queue_time={} WHERE id ={}".format(time_queue,voice_id)
                 cursor.execute(query)
                 #sqliteConnection.commit()
                 conn.commit()
@@ -77,16 +81,7 @@ def transform_audio_format(url_original, url_destiny, voice_id, email, name, url
                 # print(response.body)
                 # print(response.headers)
                 print("Email sent successfully")
-                if not os.path.isdir('./tiempos'):
-                #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
-                        os.umask(0)
-                        os.makedirs('./tiempos')
-                row = [voice_id, total_time]
-                f = open('tiempos/{}.csv'.format(file_name), 'a')
-                writer = csv.writer(f)
-                writer.writerow(row)
-                f.close() 
-                print('tiempo almacenado')
+               
 
 
                  
