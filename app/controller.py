@@ -14,10 +14,13 @@ import shutil
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
+from aws_utils import create_presigned_url,create_presigned_post
 
 guard = flask_praetorian.Praetorian()
 
 guard.init_app(app, User)
+
+CLOUD_FRONT_URL ='https://df2jjl013rfn1.cloudfront.net/'
 
 @app.route('/')
 def index():
@@ -133,7 +136,6 @@ def add_event():
 
     name = request.form['name']
     user_id = flask_praetorian.current_user().id
-    uploaded_file = request.files['img_file']
     filename = secure_filename('banner.jpg')
     
     new_contest = Contest(
@@ -157,21 +159,16 @@ def add_event():
     db.session.commit()
     #
     #  contests/user-id/contest_banner/img.jpg
-    upload_path = './contests/{}/contest_banner/'.format(new_contest.id)
+    upload_path = 'contests/{}/contest_banner/'.format(new_contest.id)
 
     new_contest.image = upload_path+filename
 
     db.session.commit()
 
-    if not os.path.isdir(upload_path):
-        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
-        os.umask(0)
-        os.makedirs(upload_path)
-        logging.info('Created directory {}'.format(upload_path))
-
-    uploaded_file.save(os.path.join(upload_path, filename))
-
-    return contest_schema.dump(new_contest)
+    response = contest_schema.dump(new_contest)
+    response_aws = create_presigned_post('contests-voices', 'carpeta/img1.png')
+    response.update(response_aws)
+    return response
 
 @app.route("/api/contests/url_update/<id_contest>", methods=["PUT"])
 def update_event_url(id_contest):
@@ -283,9 +280,10 @@ def get_contest_img(contest_id,contest_url):
     img_path = contest.image.rsplit("/",1)
 
     logging.info('Getting banner image from {}'.format(contest.image))
-    
-    return send_from_directory(img_path[0],img_path[1])
+    url = CLOUD_FRONT_URL+contest.image
 
+    #return send_from_directory(img_path[0],img_path[1])
+    return url
 
 @app.route("/api/contests/<int:contest_id>/<contest_url>/upload", methods=["POST"])
 def upload_voice(contest_id,contest_url):

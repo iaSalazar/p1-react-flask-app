@@ -7,6 +7,7 @@ import {useParams} from 'react-router-dom'
 
 
 function VoiceHome(props) {
+    console.log(props)
     const [click, setClick] = useState(1)
     const [infoClick, setInfoClick] = useState(1)
 
@@ -16,11 +17,14 @@ function VoiceHome(props) {
     const {id_contest, url_contest} = useParams()
 
     let bannerLink=`/api/contests/${id_contest}/${url_contest}/banner`
+    let bannerLink2='https://contests-voices.s3.amazonaws.com/contests/2/contest_banner/banner.jpg'
     const [banner, setBanner] = useState()
 
+    
     useEffect(()=>{
-      fetch(bannerLink).then((res) => res.blob()).then((data)=>{
-          var objectURL = URL.createObjectURL(data)
+      fetch(bannerLink).then((res) => res.text()).then((data)=>{
+          var objectURL = data
+          console.log(data)
           setBanner(objectURL)
       })
   

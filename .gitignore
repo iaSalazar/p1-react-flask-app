@@ -9,6 +9,7 @@ venv
 # testing
 /coverage
 test.py
+test_mongo.py
 # production
 /build
 
