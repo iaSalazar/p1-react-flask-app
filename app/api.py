@@ -28,8 +28,6 @@ app.app_context()
 cors = flask_cors.CORS(app) 
 db = SQLAlchemy(app) 
 ma = Marshmallow(app)
-
-
 db.init_app(app)
 
 from models import *
