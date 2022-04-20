@@ -292,40 +292,26 @@ def upload_voice(contest_id,contest_url):
     """
     
     full_contest_url='http://44.196.116.204/contests/'+str(contest_id)+'/'+contest_url
-    file_name = str(uuid.uuid4())
-    uploaded_file = request.files['audio_file']
-    
-    file_format = uploaded_file.filename.rsplit('.',1)[1]
+    file_name = request.form['file_name'].split('.')[0]
+    file_format = request.form['file_name'].split('.')[1]
     file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
-    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
+    #ahora viene desde el fron con el formato
+    file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
     #file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
 
     
     transformed = False
     #contest = Contest.query.filter((Contest.url == contest_url),(Contest.id ==contest_id)).first()
     # contests/user-id/voices/voice.xxx
-    upload_path_original = './contests/{}/voices/original/'.format(contest_id)
-    upload_path_transformed = './contests/{}/voices/transformed/'.format(contest_id)
+    upload_path_original = 'contests/{}/voices/original/'.format(contest_id)
+    upload_path_transformed = 'contests/{}/voices/transformed/'.format(contest_id)
     file_path_original = upload_path_original+file_name_final
     file_path_transformed = upload_path_transformed+file_name_transformed
     #in case the file is already mp3 format it will be considered as transformed
 
-    if not os.path.isdir(upload_path_original):
-        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
-        os.umask(0)
-        os.makedirs(upload_path_original)
-        logging.info('Created directory {}'.format(upload_path_original))
-
-    if not os.path.isdir(upload_path_transformed):
-        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
-        os.umask(0)
-        os.makedirs(upload_path_transformed)
-        logging.info('Created directory {}'.format(upload_path_transformed))
-
-    
 
     if file_format == 'mp3':
-        uploaded_file.save(os.path.join(upload_path_transformed, file_name_transformed))
+        
         #file_path_transformed = file_path_original
         transformed = True
         date_uploaded = datetime.datetime.now()
@@ -358,7 +344,7 @@ def upload_voice(contest_id,contest_url):
         #response = sg.client.mail.send.post(request_body=mail.get())
     
     else:
-        uploaded_file.save(os.path.join(upload_path_original, file_name_final))
+        
         date_uploaded = datetime.datetime.now()
         new_voice = Voice(
  
@@ -383,9 +369,6 @@ def upload_voice(contest_id,contest_url):
         db.session.commit()
 
     
-
-    
-    
     return voice_schema.dump(new_voice)
 
 @app.route("/api/contests/<int:contest_id>/org/<int:voice_id>", methods=["GET"])
@@ -395,11 +378,12 @@ def get_voice_org(voice_id,contest_id):
     get original voice file for downlaod or streaming
     """
     voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
-    print(voice.file_path_org)
-    file_path = voice.file_path_org.rsplit('/',1)
-    print(file_path)
-    return send_from_directory(file_path[0],file_path[1])
-
+    file_path_org = voice.file_path_org
+    print(file_path_org)
+    logging.info('Getting contest audio from {}'.format(file_path_org))
+    url = CLOUD_FRONT_URL+file_path_org
+    return url
+    
 @app.route("/api/contests/<int:contest_id>/trns/<int:voice_id>", methods=["GET"])
 #@flask_praetorian.auth_required
 def get_voice(voice_id,contest_id):
@@ -407,10 +391,12 @@ def get_voice(voice_id,contest_id):
     get transformed (mp3) voice file for downlaod or streaming
     """
     voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
-    print(voice.file_path)
-    file_path = voice.file_path.rsplit('/',1)
+    file_path = voice.file_path
     print(file_path)
-    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp3')
+    logging.info('Getting contest audio from {}'.format(file_path))
+    url = CLOUD_FRONT_URL+file_path
+    return url
+    
     return send_from_directory(file_path[0],file_path[1])
 
 
@@ -420,11 +406,11 @@ def get_play_voice(voice_id,contest_id):
     get transformed (mp3) voice file for downlaod or streaming
     """
     voice = Voice.query.filter((Voice.contest_id == contest_id),(Voice.id ==voice_id)).first()
-    print(voice.file_path)
-    file_path = voice.file_path.rsplit('/',1)
+    file_path = voice.file_path
     print(file_path)
-    #return send_from_directory('./contests/1/voices','54169848-6e78-4e71-b0de-5f847aeead49-transformed.mp3')
-    return send_from_directory(file_path[0],file_path[1])
+    logging.info('Getting contest audio from {}'.format(file_path))
+    url = CLOUD_FRONT_URL+file_path
+    return url
 
 
 @app.route("/api/contests/<int:contest_id>/voices", methods=["GET"])
@@ -436,3 +422,23 @@ def get_all_voices(contest_id):
     voices = Voice.query.filter(Voice.contest_id==contest_id)
     
     return jsonify(voices_schema.dump(voices))
+
+@app.route("/api/pre_signed_url/<file_name>", methods=["GET"])
+def get_pre_signed_url(file_name):
+    """
+    Get presigned s3 link
+    """
+    
+    url = create_presigned_url('contests-voices', file_name)
+    
+    return url
+
+@app.route("/api/pre_signed_url_post/<file_name>", methods=["GET"])
+def get_pre_signed_url_post(file_name):
+    """
+    Get all voices metadata
+    """
+    
+    url = create_presigned_post('contests-voices', file_name)
+    
+    return url
