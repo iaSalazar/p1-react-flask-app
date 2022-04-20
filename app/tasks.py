@@ -9,9 +9,11 @@ import psycopg2
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
-import uuid
-import csv
-import time
+from botocore.config import Config
+import boto3
+from botocore import UNSIGNED
+import logging
+import glob
 
 app = Celery('tasks', broker='redis://127.0.0.1:6379/0')
 #app = Celery('tasks', broker='redis://172.31.92.111:6379/0')
@@ -20,25 +22,48 @@ app.conf.broker_transport_options = {'visibility_timeout': 3600}  # 1 hour.
 # connection = engine.connect()
 # metadata = MetaData()
 
+PATH_TRANSFORM = './transform/'
+
+s3 = boto3.client('s3',config=Config(signature_version=UNSIGNED))
+
+if not os.path.isdir(PATH_TRANSFORM):
+        #pathlib.mkdir(upload_path, parents = True, exist_ok= True)
+        os.umask(0)
+        os.makedirs(PATH_TRANSFORM)
+        logging.info('Created directory {}'.format(PATH_TRANSFORM))
+
+
 @app.task
 def transform_audio_format(url_original, url_destiny, voice_id, email, name, url, date_uploaded):
         
         time_queue = (datetime.datetime.now() - datetime.datetime.strptime(date_uploaded.replace('T',' '), '%Y-%m-%d %H:%M:%S.%f') ).total_seconds()
 
-        url_new_file_format = url_destiny.rsplit('.',1)[0]+'.mp3'
+        
         print(str(datetime.datetime.now)+'||||||'+date_uploaded)
-        print(time_queue)
-        print(url_original)
+
+        
+
+
+        print('downloading original audio')
         print(url_destiny)
-        print(url_new_file_format)
-        input = ffmpeg.input(url_original)
+        print(url_original.rsplit('/',1))
+        path_to_transform = PATH_TRANSFORM+url_original.rsplit('/',1)[1]
+        path_transformed = PATH_TRANSFORM+url_destiny.rsplit('/',1)[1]
+        s3.download_file('contests-voices',url_original,path_to_transform)
+
+        input = ffmpeg.input(path_to_transform)
         # #remove default file extension
         
-        output = ffmpeg.output(input,url_new_file_format)
+        output = ffmpeg.output(input,path_transformed)
 
         output.run()
         
-        
+        print('Uploading transformed file')
+        s3.upload_file(path_transformed, 'contests-voices', url_destiny)
+        files = glob.glob(PATH_TRANSFORM+'/*')
+        for f in files:
+                os.remove(f)
+
         try:
                 host = os.environ.get('RDS_AWS_HOST')
                 password= os.environ.get('RDS_AWS_PSW')

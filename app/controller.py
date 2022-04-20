@@ -295,8 +295,7 @@ def upload_voice(contest_id,contest_url):
     file_name = request.form['file_name'].split('.')[0]
     file_format = request.form['file_name'].split('.')[1]
     file_name_final = secure_filename('{}.{}'.format(file_name,file_format))
-    #ahora viene desde el fron con el formato
-    file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
+    file_name_transformed = secure_filename('{}_transformed.{}'.format(file_name,'mp3'))
     #file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
 
     
@@ -311,7 +310,8 @@ def upload_voice(contest_id,contest_url):
 
 
     if file_format == 'mp3':
-        
+        file_name_transformed = secure_filename('{}.{}'.format(file_name,'mp3'))
+        file_path_transformed = upload_path_transformed+file_name_transformed
         #file_path_transformed = file_path_original
         transformed = True
         date_uploaded = datetime.datetime.now()
