@@ -15,7 +15,7 @@ import {
 } from "react-router-dom";
 
 function AdminHome() {
-
+    const [logged] = useAuth();
     let navigate = useNavigate();
     const [click, setClick] = useState(1)
     
@@ -27,11 +27,11 @@ function AdminHome() {
         <p>Concursos</p>
         <p> </p>
         <p>El administrador puede gestionar los concursos (CRUD de concursos)</p>
-        <div>
-        <Button variant="danger" onClick={() => {logout();navigate('/')}  }>Logout</Button>
+        {logged?(<div><Button variant="danger" onClick={() => {logout();navigate('/')}  }>Logout</Button>
         <span>   </span>
-        <Button variant="primary" onClick={handleClick}> Agregar</Button>
-        </div>
+        <Button variant="primary" onClick={handleClick}> Agregar</Button></div>):<p>NO SE ENCUENTRA CONECTADO PARA ADMINISTRAR LOS CONCURSOS</p>}
+        
+        
         
         {click? <ConcursoList/>: <ConcursoForm clickback={setClick}/>}
 

@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
   Navigate,
+  useNavigate,
   Link
 } from "react-router-dom";
 import validator from 'validator'
@@ -14,7 +15,7 @@ import Button from 'react-bootstrap/Button'
 
 export default function Login() {
 
-  
+  let navigate = useNavigate();
   const singUpFormData = Object.freeze({
     first_name: "",
     second_name: "",
@@ -102,9 +103,24 @@ export default function Login() {
       body: JSON.stringify(opts)
     }).then(r => r.json())
       .then(token => {
+        console.log(token.access_token)
+        if (token.access_token) {
+          login(token.access_token)
+          //sessionStorage.setItem("token", token.access_token)
           console.log(token.access_token)
-        
-      })
+          console.log(token.id)
+          setUserId(token.id)
+          sessionStorage.setItem("id", token.id)
+          setTimeout(4000)
+          console.log(`the id: ${id} should have been saved`)
+          navigate('/')
+        }
+        else {
+          console.log(token)
+          console.log("Please type in correct username/password")
+        }
+      
+    })
   }
   const [emailError, setEmailError] = useState(false)
   const validateEmail = (e) => {

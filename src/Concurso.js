@@ -14,7 +14,7 @@ import {
 
 
 function Concurso(props) {
-
+  const [logged] = useAuth();
   const [click, setClick] = useState(1)
 
   const handleClick = () => setClick(!click)
@@ -35,7 +35,8 @@ function Concurso(props) {
       <td>{props.concurso.name}</td>
       <td>{props.concurso.date_start}</td>
       <td>{props.concurso.date_end}</td>
-      <td><Button variant="danger" onClick={handleDelete}>Delete!!</Button></td>
+      {logged?(<td><Button variant="danger" onClick={handleDelete}>Delete!!</Button></td>):<td></td>}
+      
       <td>{click ? <Button variant="success" onClick={handleClick}> Go !</Button>: <Navigate to ={`/contests/${props.concurso.id}/${props.concurso.url}`}/>}</td>
       </tr>
   )
