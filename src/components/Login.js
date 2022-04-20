@@ -13,6 +13,23 @@ import {login, authFetch, useAuth, logout} from "../auth"
 import Button from 'react-bootstrap/Button'
 
 
+
+function checkLoginStatus() {
+  fetch('/api/check_logged', {
+    method: 'GET',
+    headers: {
+      "Content-type": "application/json"
+    },
+    
+  }).then(response=>response.json()).then(response => {
+    if(response.status_loged=='logged'){
+      console.log('THE USER IS LOGGED IN')
+    }else{
+      console.log('THE USER IS NOT LOGGED IN')
+    }
+  })
+}
+
 export default function Login() {
 
   let navigate = useNavigate();
@@ -75,6 +92,7 @@ export default function Login() {
           setUserId(token.id)
           sessionStorage.setItem("id", token.id)
           setTimeout(4000)
+          checkLoginStatus()
           console.log(`the id: ${id} should have been saved`)
         }
         else {

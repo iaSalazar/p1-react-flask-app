@@ -12,8 +12,24 @@ import {
 } from "react-router-dom";
 
 
+var [logged] = '';
+function checkLoginStatus() {
+  fetch('/api/check_logged', {
+    method: 'GET',
+    headers: {
+      "Content-type": "application/json"
+    },
+    
+  }).then(response=>response.json()).then(response => {
+    if(response.status_loged=='logged'){
+      logged = true
+      console.log('es igual a ' + response.status_loged)
+    }
+  })
+}
 
 function Concurso(props) {
+  
   const [logged] = useAuth();
   const [click, setClick] = useState(1)
 

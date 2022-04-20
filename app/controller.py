@@ -4,7 +4,7 @@ from webbrowser import get
 from api import app, db
 from models import User, Contest, Voice, user_schema, contest_schema, contests_schema, voice_schema, voices_schema
 import datetime
-from flask import request, jsonify, send_from_directory
+from flask import request, jsonify, send_from_directory, session
 import flask_praetorian
 import os
 from werkzeug.utils import secure_filename
@@ -15,12 +15,20 @@ import sendgrid
 import os
 from sendgrid.helpers.mail import *
 from aws_utils import create_presigned_url,create_presigned_post
+from flask_session import Session
 
 guard = flask_praetorian.Praetorian()
 
 guard.init_app(app, User)
 
 CLOUD_FRONT_URL ='https://df2jjl013rfn1.cloudfront.net/'
+SESSION_REDIS = 'sessionhandler.jomdrt.ng.0001.usw2.cache.amazonaws.com:6379'
+
+
+def get_current_user():
+    
+    return session.get("user_id")
+
 
 @app.route('/')
 def index():
@@ -42,15 +50,42 @@ def members():
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
+
+@app.route("/api/logins", methods=["POST"])
+def login_session():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    user = guard.authenticate(username, password)
+    if user is None:
+        return jsonify({'error': 'Unathorized'}), 409
+
+    session["user_id"] = user.id
+
+    return jsonify({'status': "200"})
+    
+@app.route("/api/logout", methods=["POST"])
+def logout_user():
+    session.pop("user_id")
+    return jsonify({'status': "200"})
+    
+@app.route("/api/check_logged", methods=["GET"])
+def check_logged():
+    user_id= session.get("user_id")
+    if not user_id:
+        return jsonify({"error":"Unathorized"})
+
+    return jsonify({'status_loged': "logged"})
+
 @app.route("/api/login", methods=["POST"])
 def login():
     
     #req = request.get_json(force=True)
     username = request.json.get("username", None)
     password = request.json.get("password", None)
-    usert = guard.authenticate(username, password)
-    user = User.query.filter_by(username=username).first()
-    ret = {'access_token': guard.encode_jwt_token(usert),
+    user = guard.authenticate(username, password)
+    print(user.username,user.password,user.roles)
+    session["user_id"] = user.id
+    ret = {'access_token': guard.encode_jwt_token(user),
     'id':user.id}
     return ret, 200
     """ username = request.json.get("username", None)

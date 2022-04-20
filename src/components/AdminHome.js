@@ -14,9 +14,21 @@ import {
   useHistory
 } from "react-router-dom";
 
-
-
-
+function logout_server_session() {
+  fetch('/api/logout', {
+    method: 'POST',
+    headers: {
+      "Content-type": "application/json"
+    },
+    
+  }).then(response=>response.json()).then(response => {
+    if(response.status=='200'){
+      console.log('LOGGED OUT FROM SERVER SESSION')
+    }else{
+      console.log('something happened')
+    }
+  })
+}
 
 function AdminHome() {
     const [logged] = useAuth();
@@ -31,8 +43,7 @@ function AdminHome() {
         <p>Concursos</p>
         <p> </p>
         <p>El administrador puede gestionar los concursos (CRUD de concursos)</p>
-        
-        {logged?(<div><Button variant="danger" onClick={() => {logout();navigate('/')}  }>Logout</Button>
+        {logged?(<div><Button variant="danger" onClick={() => {logout();logout_server_session();navigate('/')}  }>Logout</Button>
         <span>   </span>
         <Button variant="primary" onClick={handleClick}> Agregar</Button></div>):<p>NO SE ENCUENTRA CONECTADO PARA ADMINISTRAR LOS CONCURSOS</p>}
         
