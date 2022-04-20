@@ -18,6 +18,7 @@ function ConcursoList(props) {
     //const { id_user } = this.props.match.params.id_user
     //const {id_user} = useParams()
     //console.log(id_user)
+    
     const id_user = sessionStorage.getItem("id")
     const apiLink = `/api/contests/user/${id_user}/list`
     const adminLink = "admin"

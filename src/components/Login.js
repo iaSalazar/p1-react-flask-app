@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
   Navigate,
+  useNavigate,
   Link
 } from "react-router-dom";
 import validator from 'validator'
@@ -14,7 +15,7 @@ import Button from 'react-bootstrap/Button'
 
 export default function Login() {
 
-  
+  let navigate = useNavigate();
   const singUpFormData = Object.freeze({
     first_name: "",
     second_name: "",
@@ -83,6 +84,7 @@ export default function Login() {
   }
 
   const onSubmitSingUpClick = (e) => {
+    
     e.preventDefault()
     console.log("You pressed singUp")
     let opts = {
@@ -94,7 +96,7 @@ export default function Login() {
       'roles':  'admin'
     }
     console.log(opts)
-    fetch('/api/singUp', {
+    fetch('/api/signUp', {
       method: 'post',
       headers: {
         "Content-type": "application/json"
@@ -103,6 +105,21 @@ export default function Login() {
     }).then(r => r.json())
       .then(token => {
           console.log(token.access_token)
+          if (token.access_token) {
+            login(token.access_token)
+            //sessionStorage.setItem("token", token.access_token)
+            console.log(token.access_token)
+            console.log(token.id)
+            setUserId(token.id)
+            sessionStorage.setItem("id", token.id)
+            setTimeout(4000)
+            console.log(`the id: ${id} should have been saved`)
+            navigate('/')
+          }
+          else {
+            console.log(token)
+            console.log("Please type in correct username/password")
+          }
         
       })
   }

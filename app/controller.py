@@ -80,7 +80,7 @@ def refresh():
 
 
 
-@app.route("/api/singUp", methods=["POST"])
+@app.route("/api/signUp", methods=["POST"])
 def add_user():
     """
     add new user
@@ -100,9 +100,19 @@ def add_user():
         )
 
     db.session.add(new_user)
-
+    db.session.flush()
     db.session.commit()
-    return user_schema.dump(new_user)
+    username = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    print(username, password)
+    
+    
+    user = User.query.filter_by(username=username).first()
+    usert = guard.authenticate(username,password)
+    ret = {'access_token': guard.encode_jwt_token(usert),
+    'id':new_user.id}
+    return ret
 
 @app.route("/api/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
