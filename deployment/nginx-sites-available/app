@@ -1,4 +1,4 @@
-  GNU nano 4.8                                                    /etc/nginx/sites-available/app                                                              
+#GNU nano 4.8                                                    /etc/nginx/sites-available/app                                                              
 server {
 
 listen 80;
