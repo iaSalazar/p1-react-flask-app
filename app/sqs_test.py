@@ -3,6 +3,9 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 import json
+from botocore.config import Config
+import boto3
+from botocore import UNSIGNED
 
 AWS_REGION = 'us-west-2'
 # Create SQS client
