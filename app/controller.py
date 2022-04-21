@@ -293,7 +293,7 @@ def upload_voice(contest_id,contest_url):
     add new voice
     """
     
-    full_contest_url='deployement-C-151514116.us-east-1.elb.amazonaws.com/'+str(contest_id)+'/'+contest_url
+    full_contest_url='deployement-C-151514116.us-east-1.elb.amazonaws.com/contests/'+str(contest_id)+'/'+contest_url
     file_name = str(uuid.uuid4())
     uploaded_file = request.files['audio_file']
     
