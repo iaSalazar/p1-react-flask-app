@@ -3,8 +3,6 @@ import time
 import boto3
 from botocore.exceptions import ClientError
 import json
-from botocore.config import Config
-import boto3
 from botocore import UNSIGNED
 import datetime
 import zipfile
@@ -110,9 +108,9 @@ while 1:
             database = os.environ.get('RDS_AWS_DBN')
             user = os.environ.get('RDS_AWS_USR')
             print(user)
-            conn = psycopg2.connect(host="localhost", database="test", user="postgres",password="2006iaso")
-        #     conn = psycopg2.connect(
-        #         host=host, database=database, user=user, password=password)
+            #conn = psycopg2.connect(host="localhost", database="test", user="postgres",password="2006iaso")
+            conn = psycopg2.connect(
+                host=host, database=database, user=user, password=password)
 
             cursor = conn.cursor()
 
