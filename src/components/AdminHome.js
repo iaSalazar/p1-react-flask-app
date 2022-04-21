@@ -31,7 +31,6 @@ function logout_server_session() {
 }
 
 function AdminHome() {
-    window.location.reload(true);
     const [logged] = useAuth();
     let navigate = useNavigate();
     const [click, setClick] = useState(1)
