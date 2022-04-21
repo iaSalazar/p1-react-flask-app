@@ -1,0 +1,28 @@
+  GNU nano 4.8                                                    /etc/nginx/sites-available/app                                                              
+server {
+
+listen 80;
+root /home/ubuntu/p1-react-flask-app/build;
+index index.html;
+
+server_name ~^(.+)$;
+
+location / {
+try_files $uri $uri/ /index.html = 404;
+add_header Cache-Control "no-cache";
+}
+
+location /static {
+expires 1y;
+add_header Cache-Control "public";
+}
+
+location /api {
+
+include proxy_params;
+
+proxy_pass http://unix:/home/ubuntu/p1-react-flask-app/app/app.sock;
+
+}
+
+}
