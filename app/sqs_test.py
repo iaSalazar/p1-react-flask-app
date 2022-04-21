@@ -12,7 +12,7 @@ AWS_REGION = 'us-west-2'
 sqs = boto3.client('sqs',AWS_REGION,config=Config(signature_version=UNSIGNED))
 
 response = sqs.send_message(
-    QueueUrl='https://sqs.us-west-2.amazonaws.com/724199215181/audio',
+    QueueUrl='https://sqs.us-west-2.amazonaws.com/724199215181/voices',
     DelaySeconds=10,
     MessageAttributes={
         'Title': {
