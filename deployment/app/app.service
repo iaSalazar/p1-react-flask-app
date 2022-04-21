@@ -14,11 +14,11 @@ WorkingDirectory=/home/ubuntu/p1-react-flask-app/app
 
 Environment="PATH=/home/ubuntu/p1-react-flask-app/app"
 Environment="SENDGRID_API_KEY=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"
-Environment="RDS_AWS=postgresql+psycopg2://postgres:2006iaso@test.cvov6d9cossl.us-east-1.rds.amazonaws.com:5432/test"
+Environment="RDS_AWS=postgresql+psycopg2://{usr}}:{pswd}@test.cvov6d9cossl.us-east-1.rds.amazonaws.com:5432/test"
 Environment="RDS_AWS_HOST=test.cvov6d9cossl.us-east-1.rds.amazonaws.com"
-Environment="RDS_AWS_PSW=2006iaso"
+Environment="RDS_AWS_PSW="
 Environment="RDS_AWS_DBN=test"
-Environment="RDS_AWS_USR=postgres"
+Environment="RDS_AWS_USR="
 
 
 
